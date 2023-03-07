@@ -88,7 +88,7 @@ class Detection:
 
             if result1 is None:
                 result1 = '图片文字内容合格'
-
+            result1 = translate_youdao(result1)
             Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
 
             # -----------------2/28新增内容--------------------------#
@@ -174,8 +174,8 @@ class Detection:
             if result1 is None:
                 result1 = '图片文字内容合格'
 
-
-            Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
+            result1 = translate_youdao(result1)
+            Text_3.insert('insert', result1+'\n')  # 将结果添加到文本框显示
 
             #
             # fname = "./error.txt"
