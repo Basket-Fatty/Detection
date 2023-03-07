@@ -3,7 +3,6 @@
 import requests
 import base64
 import json
-import cv2
 import os
 import re
 import string
@@ -43,16 +42,16 @@ def ocr(image_path):
 
 
 
-def changeImage(path, pra):
-    img = cv2.imread(path, 1)
-    #pra为缩放的倍率
-    width,height  = img.shape[:2]
-    #此处要做integer强转,因为.resize接收的参数为形成新图像的长宽像素点个数
-    size = (int(height*pra), int(width*pra))
-    img_new = cv2.resize(img, size, interpolation=cv2.INTER_AREA)
-    os.path.join('nsfw_master\data', '11.jpg')  # 保存的图片与原始图片同名
-
-    return 'nsfw_master/data'+ '/11'
+# def changeImage(path, pra):
+#     # img = cv2.imread(path, 1)
+#     #pra为缩放的倍率
+#     width,height  = img.shape[:2]
+#     #此处要做integer强转,因为.resize接收的参数为形成新图像的长宽像素点个数
+#     size = (int(height*pra), int(width*pra))
+#     # img_new = cv2.resize(img, size, interpolation=cv2.INTER_AREA)
+#     os.path.join('nsfw_master\data', '11.jpg')  # 保存的图片与原始图片同名
+#
+#     return 'nsfw_master/data'+ '/11'
 
 
 
@@ -139,7 +138,7 @@ def text_moderation(text_raw):
 if  __name__ == '__main__':
     #image = 'C:/Users/汤思源/Desktop/IMG_5177(20230220-232409).JPG'
     #ocr(image)
-    str = changeImage('./culturelle.jpg', 0.2)
+    # str = changeImage('./culturelle.jpg', 0.2)
     print(str)
     # list = ocr(str)
     # print(list)

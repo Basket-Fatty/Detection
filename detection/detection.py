@@ -19,7 +19,6 @@ import xlrd
 import datetime
 from datetime import timedelta
 from AC_automata import ac_automation
-import cv2
 import numpy as np
 from ocr_baidu import *
 
@@ -39,7 +38,7 @@ class Detection:
             # Folderpath = filedialog.askdirectory() #获得选择好的文件夹
 
         def OCR():
-            # 导入OCR安装路径，如果设置了系统环境，就可以不用设置了
+            # 导入OCR安装路径,如果设置了系统环境,就可以不用设置了
             pytesseract.pytesseract.tesseract_cmd = "E:\\tesseract-ocr\\tesseract.exe"  # 此处为我的修改点
             # os.environ['TESSDATA_PREFIX'] = 'E:\\tesseract-ocr\\tessdata'
             # testdata_dir_config = '--tessdata-dir "C:\\ProgramFiles\\Tesseract-OCR\\tessdata"'
@@ -78,7 +77,7 @@ class Detection:
             for str in stringList:
                 str2 = ah.words_replace(str)
                 if len(str) != len(str2):
-                    result = "广告内有3号违规词："
+                    result = "广告内有3号违规词:"
                     # print(result)
                     Text_3.insert('insert', result)  # 将结果添加到文本框显示
 
@@ -97,7 +96,7 @@ class Detection:
             # fname = "./sensitive_words_lines.txt"
             # # result1 = text_maching(fname, text)
             # # for data in result1:
-            # #     result = "广告内有违规词：" + data
+            # #     result = "广告内有违规词:" + data
             # #     # print(result)
             # #     Text_3.insert('insert', result)  # 将结果添加到文本框显示
             #
@@ -118,7 +117,7 @@ class Detection:
             #         if m == None:
             #             i += 1
             #         else:
-            #             result = "广告内有2号违规词：" + lines[i]
+            #             result = "广告内有2号违规词:" + lines[i]
             #             # print(result)
             #             Text_3.insert('insert', result)  # 将结果添加到文本框显示
             #             break
@@ -141,7 +140,7 @@ class Detection:
 
             # 格式化时间
             time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # 加载excel，注意路径要与脚本一致
+            # 加载excel,注意路径要与脚本一致
             wb = load_workbook('result.xlsx')
             # 激活excel表
             sheet = wb.active
@@ -191,7 +190,7 @@ class Detection:
             #         if m == None:
             #             i += 1
             #         else:
-            #             result = "广告内有违规词：" + lines[i]
+            #             result = "广告内有违规词:" + lines[i]
             #             # print(result)
             #             # Text_3.insert('insert', result)  # 将结果添加到文本框显示
             #
@@ -220,7 +219,7 @@ class Detection:
             time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             # -------------------------写入excel---------------------
-            # 加载excel，注意路径要与脚本一致
+            # 加载excel,注意路径要与脚本一致
             wb = load_workbook('result.xlsx')
             # 激活excel表
             sheet = wb.active
@@ -256,9 +255,9 @@ class Detection:
             path = n1[:-1]
             # 首先遍历当前目录所有文件及文件夹
             file_list = os.listdir(path)
-            # 循环判断每个元素是否是文件夹还是文件，是文件夹的话，递归
+            # 循环判断每个元素是否是文件夹还是文件,是文件夹的话,递归
             for file in file_list:
-                # 利用os.path.join()方法取得路径全名，并存入cur_path变量，否则每次只能遍历一层目录
+                # 利用os.path.join()方法取得路径全名,并存入cur_path变量,否则每次只能遍历一层目录
                 cur_path = os.path.join(path, file)
                 print(file)
 
@@ -277,7 +276,7 @@ class Detection:
             for i in range(len(result)):
                 ListView_1.insert("", 1, text="line2", values=(
                 int(result.iloc[i, [0]]['ID']), content, result.iloc[i, [2]]['更新时间'],
-                result.iloc[i, [3]]['识别结果']))  # #给第0⾏添加数据，索引值可重复
+                result.iloc[i, [3]]['识别结果']))  # #给第0⾏添加数据,索引值可重复
 
         def Statistics(num):
 
@@ -290,34 +289,34 @@ class Detection:
             Fun.Register(uiName, 'Canvas_2', Canvas_2)
             Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
             detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
-            Label_9 = tkinter.Label(Form_1, text="违法")
-            Fun.Register(uiName, 'Label_9', Label_9, '违法类别')
+            Label_9 = tkinter.Label(Form_1, text="Illegal")
+            Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
             Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
             Label_9.configure(bg="#ffffff")
             Label_9.configure(relief="flat")
-            Label_9_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+            Label_9_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                            overstrike=0)
             Label_9.configure(font=Label_9_Ft)
-            Label_10 = tkinter.Label(Form_1, text="合格")
-            Fun.Register(uiName, 'Label_10', Label_10, '合格类别')
+            Label_10 = tkinter.Label(Form_1, text="Qualified")
+            Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
             Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
             Label_10.configure(bg="#ffffff")
             Label_10.configure(relief="flat")
-            Label_10_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+            Label_10_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
             Label_10.configure(font=Label_10_Ft)
 
-            Label_12 = tkinter.Label(Form_1, text="共识别" + str(num) + "张图片，其统计结果如下：")
-            Fun.Register(uiName, 'Label_12', Label_12, '合格类别')
+            Label_12 = tkinter.Label(Form_1, text="Number" + str(num) + "pictures, results are following:")
+            Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
             Fun.SetControlPlace(uiName, 'Label_12', 100, 200, 400, 30)
             Label_12.configure(bg="#ffffff")
             Label_12.configure(relief="flat")
-            Label_12_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+            Label_12_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
             Label_12.configure(font=Label_12_Ft)
 
-            Label_13 = tkinter.Label(Form_1, text="A-化妆品,B-保健品,C-生活用品,\nD-医药,E-教育")
-            Fun.Register(uiName, 'Label_13', Label_13, '图例')
+            Label_13 = tkinter.Label(Form_1, text="A-Cosmetics,B-Health Care Products,C-Daily Necessities,\nD-Medicine,E-Education")
+            Fun.Register(uiName, 'Label_13', Label_13, 'legend')
             Fun.SetControlPlace(uiName, 'Label_13', 15, 450, 240, 30)
             Label_13.configure(bg="#ffffff")
             Label_13.configure(relief="flat")
@@ -333,7 +332,7 @@ class Detection:
         Fun.Register(uiName, 'root', root)
         # style = detection_sty.SetupStyle()
         if isTKroot == True:
-            root.title("融媒体违法广告识别软件")
+            root.title("INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
             Fun.CenterDlg(uiName, root, 1200, 600)
             root['background'] = '#efefef'
         Form_1 = tkinter.Canvas(root, width=10, height=4)
@@ -342,130 +341,130 @@ class Detection:
         Form_1.configure(highlightthickness=0)
         Fun.Register(uiName, 'Form_1', Form_1)
         # Create the elements of root
-        Label_1 = tkinter.Label(Form_1, text="融媒体违法广告识别软件")
-        Fun.Register(uiName, 'Label_1', Label_1, '融媒体违法广告识别软件')
+        Label_1 = tkinter.Label(Form_1, text="INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
+        Fun.Register(uiName, 'Label_1', Label_1, 'INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION')
         Fun.SetControlPlace(uiName, 'Label_1', 250, 0, 737, 50)
         Label_1.configure(relief="flat")
-        Label_1_Ft = tkinter.font.Font(family='华文新魏', size=25, weight='bold', slant='roman', underline=0, overstrike=0)
+        Label_1_Ft = tkinter.font.Font(family='华文新魏', size=20, weight='bold', slant='roman', underline=0, overstrike=0)
         Label_1.configure(font=Label_1_Ft)
         ListBox_1 = tkinter.Listbox(Form_1)
-        Fun.Register(uiName, 'ListBox_1', ListBox_1, '单张识别')
+        Fun.Register(uiName, 'ListBox_1', ListBox_1, 'Single Recognition')
         Fun.SetControlPlace(uiName, 'ListBox_1', 600, 50, 600, 300)
         ListBox_2 = tkinter.Listbox(Form_1)
-        Fun.Register(uiName, 'ListBox_2', ListBox_2, '批次处理')
+        Fun.Register(uiName, 'ListBox_2', ListBox_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'ListBox_2', 0, 50, 600, 550)
-        Label_2 = tkinter.Label(Form_1, text="批处理")
-        Fun.Register(uiName, 'Label_2', Label_2, '批处理')
+        Label_2 = tkinter.Label(Form_1, text="Batch Process")
+        Fun.Register(uiName, 'Label_2', Label_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'Label_2', 0, 50, 100, 20)
         Label_2.configure(relief="flat")
-        Label_3 = tkinter.Label(Form_1, text="单一处理")
-        Fun.Register(uiName, 'Label_3', Label_3, '单一处理')
+        Label_3 = tkinter.Label(Form_1, text="Single Process")
+        Fun.Register(uiName, 'Label_3', Label_3, 'Single Process')
         Fun.SetControlPlace(uiName, 'Label_3', 600, 50, 100, 20)
         Label_3.configure(relief="flat")
-        Label_4 = tkinter.Label(Form_1, text="文件夹路径：")
-        Fun.Register(uiName, 'Label_4', Label_4, '文件夹路径')
+        Label_4 = tkinter.Label(Form_1, text="Folder Path:")
+        Fun.Register(uiName, 'Label_4', Label_4, 'Folder Path')
         Fun.SetControlPlace(uiName, 'Label_4', 20, 80, 150, 40)
         Label_4.configure(bg="#ffffff")
         Label_4.configure(relief="flat")
-        Label_4_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+        Label_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
         Label_4.configure(font=Label_4_Ft)
         Text_1 = tkinter.Text(Form_1)
-        Fun.Register(uiName, 'Text_1', Text_1, '输入地址')
+        Fun.Register(uiName, 'Text_1', Text_1, 'Enter Path')
         Fun.SetControlPlace(uiName, 'Text_1', 170, 80, 150, 40)
         Text_1.configure(bg="#ffffff")
         Text_1.configure(relief="sunken")
-        Button_1 = tkinter.Button(Form_1, text="选择文件", command=findfiles)
-        Fun.Register(uiName, 'Button_1', Button_1, '选择文件')
+        Button_1 = tkinter.Button(Form_1, text="Choose", command=findfiles)
+        Fun.Register(uiName, 'Button_1', Button_1, 'Choose')
         Fun.SetControlPlace(uiName, 'Button_1', 320, 80, 120, 40)
-        Button_1_Ft = tkinter.font.Font(family='华文新魏', size=13, weight='normal', slant='roman', underline=0,
+        Button_1_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_1.configure(font=Button_1_Ft)
-        Button_2 = tkinter.Button(Form_1, text="识别", command=identification)
-        Fun.Register(uiName, 'Button_2', Button_2, '识别')
+        Button_2 = tkinter.Button(Form_1, text="Recognition", command=identification)
+        Fun.Register(uiName, 'Button_2', Button_2, 'Recognition')
         Fun.SetControlPlace(uiName, 'Button_2', 440, 80, 100, 40)
-        Button_2_Ft = tkinter.font.Font(family='华文新魏', size=13, weight='normal', slant='roman', underline=0,
+        Button_2_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_2.configure(font=Button_2_Ft)
-        Label_5 = tkinter.Label(Form_1, text="图片路径：")
-        Fun.Register(uiName, 'Label_5', Label_5, '图片路径')
+        Label_5 = tkinter.Label(Form_1, text="Picture Path:")
+        Fun.Register(uiName, 'Label_5', Label_5, 'Picture Path')
         Fun.SetControlPlace(uiName, 'Label_5', 620, 80, 150, 40)
         Label_5.configure(bg="#ffffff")
         Label_5.configure(relief="flat")
-        Label_5_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+        Label_5_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
         Label_5.configure(font=Label_5_Ft)
         ListBox_3 = tkinter.Listbox(Form_1)
-        Fun.Register(uiName, 'ListBox_3', ListBox_3, '历史记录')
+        Fun.Register(uiName, 'ListBox_3', ListBox_3, 'History')
         Fun.SetControlPlace(uiName, 'ListBox_3', 600, 350, 600, 250)
-        Button_3 = tkinter.Button(Form_1, text="选择图片", command=openFile)
-        Fun.Register(uiName, 'Button_3', Button_3, '图片选择')
+        Button_3 = tkinter.Button(Form_1, text="Choose", command=openFile)
+        Fun.Register(uiName, 'Button_3', Button_3, 'Choose')
         Fun.SetControlPlace(uiName, 'Button_3', 920, 80, 100, 40)
-        Button_3_Ft = tkinter.font.Font(family='华文新魏', size=13, weight='normal', slant='roman', underline=0,
+        Button_3_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_3.configure(font=Button_3_Ft)
-        Button_4 = tkinter.Button(Form_1, text="识别", command=OCR)
-        Fun.Register(uiName, 'Button_4', Button_4, '单一识别')
+        Button_4 = tkinter.Button(Form_1, text="Recognition", command=OCR)
+        Fun.Register(uiName, 'Button_4', Button_4, 'Single Recognition')
         Fun.SetControlPlace(uiName, 'Button_4', 1020, 80, 100, 40)
-        Button_4_Ft = tkinter.font.Font(family='华文新魏', size=13, weight='normal', slant='roman', underline=0,
+        Button_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_4.configure(font=Button_4_Ft)
-        Label_6 = tkinter.Label(Form_1, text="识别结果：")
-        Fun.Register(uiName, 'Label_6', Label_6, '单一结果')
+        Label_6 = tkinter.Label(Form_1, text="Result:")
+        Fun.Register(uiName, 'Label_6', Label_6, 'Single Result')
         Fun.SetControlPlace(uiName, 'Label_6', 620, 120, 150, 40)
         Label_6.configure(bg="#ffffff")
         Label_6.configure(relief="flat")
-        Label_6_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+        Label_6_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
         Label_6.configure(font=Label_6_Ft)
         Text_2 = tkinter.Text(Form_1)
-        Fun.Register(uiName, 'Text_2', Text_2, '访问图片地址')
+        Fun.Register(uiName, 'Text_2', Text_2, 'Access Image Address')
         Fun.SetControlPlace(uiName, 'Text_2', 770, 80, 150, 40)
         Text_2.configure(relief="sunken")
         Text_3 = tkinter.Text(Form_1)
-        Fun.Register(uiName, 'Text_3', Text_3, '图片识别结果')
+        Fun.Register(uiName, 'Text_3', Text_3, 'Picture Result')
         Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 350, 160)
         Text_3.configure(relief="sunken")
-        Label_6 = tkinter.Label(Form_1, text="历史记录")
-        Fun.Register(uiName, 'Label_6', Label_6, '历史记录查询')
+        Label_6 = tkinter.Label(Form_1, text="History")
+        Fun.Register(uiName, 'Label_6', Label_6, 'History Query')
         Fun.SetControlPlace(uiName, 'Label_6', 600, 350, 100, 20)
         Label_5.configure(relief="flat")
-        Label_7 = tkinter.Label(Form_1, text="识别结果：")
-        Fun.Register(uiName, 'Label_7', Label_7, '批量结果')
+        Label_7 = tkinter.Label(Form_1, text="Result:")
+        Fun.Register(uiName, 'Label_7', Label_7, 'Batch Result')
         Fun.SetControlPlace(uiName, 'Label_7', 20, 120, 150, 40)
         Label_7.configure(bg="#ffffff")
         Label_7.configure(relief="flat")
-        Label_7_Ft = tkinter.font.Font(family='华文新魏', size=15, weight='normal', slant='roman', underline=0,
+        Label_7_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
         Label_7.configure(font=Label_7_Ft)
         ListView_1 = tkinter.ttk.Treeview(Form_1, show="headings")
         Fun.Register(uiName, 'ListView_1', ListView_1)
         Fun.SetControlPlace(uiName, 'ListView_1', 620, 420, 560, 160)
         ListView_1.configure(selectmode="extended")
-        ListView_1.configure(columns=["ID", "文件名", "更新时间", "识别结果"])
+        ListView_1.configure(columns=["ID", "File Name", "Last Update Time", "Result"])
         ListView_1.column("ID", anchor="center", width=20)
         ListView_1.heading("ID", anchor="center", text="ID")
-        ListView_1.column("文件名", anchor="center", width=60)
-        ListView_1.heading("文件名", anchor="center", text="文件名")
-        ListView_1.column("更新时间", anchor="center", width=60)
-        ListView_1.heading("更新时间", anchor="center", text="更新时间")
-        ListView_1.column("识别结果", anchor="center", width=150)
-        ListView_1.heading("识别结果", anchor="center", text="识别结果")
+        ListView_1.column("File Name", anchor="center", width=60)
+        ListView_1.heading("File Name", anchor="center", text="File Name")
+        ListView_1.column("Last Update Time", anchor="center", width=60)
+        ListView_1.heading("Last Update Time", anchor="center", text="Last Update Time")
+        ListView_1.column("Result", anchor="center", width=150)
+        ListView_1.heading("Result", anchor="center", text="Result")
 
-        Label_8 = tkinter.Label(Form_1, text="图片名：")
-        Fun.Register(uiName, 'Label_8', Label_8, '文件名')
+        Label_8 = tkinter.Label(Form_1, text="Picture Name:")
+        Fun.Register(uiName, 'Label_8', Label_8, 'File Name')
         Fun.SetControlPlace(uiName, 'Label_8', 652, 385, 100, 20)
         Label_8.configure(relief="flat")
         Entry_1_Variable = Fun.AddTKVariable(uiName, 'Entry_1', '')
         Entry_1 = tkinter.Entry(Form_1, textvariable=Entry_1_Variable)
-        Fun.Register(uiName, 'Entry_1', Entry_1, '查询图片名')
+        Fun.Register(uiName, 'Entry_1', Entry_1, 'Picture Name')
         Fun.SetControlPlace(uiName, 'Entry_1', 752, 385, 120, 20)
         Entry_1.configure(relief="sunken")
-        Button_5 = tkinter.Button(Form_1, text="查询", command=query)
-        Fun.Register(uiName, 'Button_5', Button_5, '查询')
+        Button_5 = tkinter.Button(Form_1, text="Search", command=query)
+        Fun.Register(uiName, 'Button_5', Button_5, 'Search')
         Fun.SetControlPlace(uiName, 'Button_5', 865, 384, 100, 28)
-        Button_6 = tkinter.Button(Form_1, text="更多", command=openExcel)
-        Fun.Register(uiName, 'Button_6', Button_6, '更多')
+        Button_6 = tkinter.Button(Form_1, text="More", command=openExcel)
+        Fun.Register(uiName, 'Button_6', Button_6, 'More')
         Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 28)
 
         # Add Some Logic Code Here: (Keep This Line of comments)
