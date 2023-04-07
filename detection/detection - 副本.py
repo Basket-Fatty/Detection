@@ -10,7 +10,6 @@ from   tkinter import *
 import tkinter.ttk
 import tkinter.font
 from tkinter import filedialog
-import pytesseract
 from PIL import Image
 import re
 import pandas as pd

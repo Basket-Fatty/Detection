@@ -7,7 +7,7 @@ import os
 import re
 import string
 string.punctuation
-
+from DFA import *
 
 
 
@@ -25,7 +25,7 @@ def ocr(image_path):
     img = base64.b64encode(f.read())
 
     params = {"image": img}
-    access_token = '24.edb7c86bb6750685f3fbb8187306da73.2592000.1680236619.282335-30849076'
+    access_token = '24.900e8ceaafc5011d91a1df481ca4ae15.2592000.1683374449.282335-32072986'
     request_url = request_url + "?access_token=" + access_token
     headers = {'content-type': 'application/x-www-form-urlencoded'}
     response = requests.post(request_url, data=params, headers=headers)
@@ -94,6 +94,7 @@ def text_maching(path, text):
 '''
 #输入待审核文本，输出结论文本
 #限制字符长度6666
+#此为下策，现在接口应该已经过期了
 def text_moderation(text_raw):
     request_url = "https://aip.baidubce.com/rest/2.0/solution/v1/text_censor/v2/user_defined"
 
@@ -168,16 +169,27 @@ def get_reuslt(repsonse):
 
     return str
 
+#写入txt函数,输入的是列表
+def text_save(filename, data):#filename为写入CSV文件的路径，data为要写入数据列表.
+    file = open(filename,'w',encoding='utf-8')
+    for i in range(len(data)):
+        s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
+        s = s.replace("'",'').replace(',','') +'\n'   #去除单引号，逗号，每行末尾追加换行符
+        file.write(s)
+    file.close()
+    print("保存文件成功")
+
 def translate_youdao(word):
     list_trans = translate(word)
     str = get_reuslt(list_trans)
     return  str
 
+
 if  __name__ == '__main__':
-    #image = 'C:/Users/汤思源/Desktop/IMG_5177(20230220-232409).JPG'
-    #ocr(image)
-    # str = changeImage('./culturelle.jpg', 0.2)
-    print(str)
-    # list = ocr(str)
-    # print(list)
+    imagepath ="C:/Users/10570/Desktop/毕设/FinancialMediaDetection-v2/FinancialMediaDetection/detection/data/small_picture/3D蒸汽热敷眼罩(1).jpg"
+    list = ocr(imagepath)
+    text_save("text.txt",list)
+    run("text.txt")
+
+
 

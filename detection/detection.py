@@ -4,12 +4,14 @@ import sys
 import detection_cmd
 import Fun
 import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"]='1' # 这是默认的显示等级，显示所有信息
+os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error
+os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error
 import tkinter
 from tkinter import *
 import tkinter.ttk
 import tkinter.font
 from tkinter import filedialog
-import pytesseract
 from PIL import Image
 import re
 import pandas as pd
@@ -39,7 +41,7 @@ class Detection:
 
         def OCR():
             # 导入OCR安装路径,如果设置了系统环境,就可以不用设置了
-            pytesseract.pytesseract.tesseract_cmd = "E:\\tesseract-ocr\\tesseract.exe"  # 此处为我的修改点
+            #pytesseract.pytesseract.tesseract_cmd = "E:\\tesseract-ocr\\tesseract.exe"  # 此处为我的修改点
             # os.environ['TESSDATA_PREFIX'] = 'E:\\tesseract-ocr\\tessdata'
             # testdata_dir_config = '--tessdata-dir "C:\\ProgramFiles\\Tesseract-OCR\\tessdata"'
             n1 = Text_2.get(1.0, 'end')  # 获取文本框1的值
@@ -51,11 +53,14 @@ class Detection:
             # -----------------2/29新增内容--------------------------#
             # 调用ocr方法（百度文字识别API）识别文字
             stringList = ocr(result)
-            print(stringList)
-            text = ''
-            for i in stringList:
-                text = text +',' +i
-            print(text)
+            text_save("text.txt", stringList)
+            str_result = run("text.txt")
+
+            # print(stringList)
+            # text = ''
+            # for i in stringList:
+            #     text = text +',' +i
+            # print(text)
             # text = "".join(text.split())  # 去除字符串中所有的空格
 
             # image = np.asarray(image)
@@ -84,11 +89,11 @@ class Detection:
             # 检测文本内容是否有sensitive_words_lines.txt中的违禁词
             # fname = "sensitive_words_lines.txt"
             # result1 = text_maching(fname, text)
-            result1 = text_moderation(text)
+            #result1 = text_moderation(str_result)
 
-            if result1 is None:
-                result1 = '图片文字内容合格'
-            result1 = translate_youdao(result1)
+            if len(str_result)<27:
+                str_result = '图片文字内容合格'
+            result1 = translate_youdao(str_result)
             Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
 
             # -----------------2/28新增内容--------------------------#
@@ -165,16 +170,16 @@ class Detection:
             # a = pytesseract.image_to_string(image, lang='chi_sim')
             stringlist =  ocr(path)
             text = ''
-            for i in stringlist:
-                text += i
+            text_save("text.txt", stringlist)
+            str_result = run("text.txt")
             #text = "".join(stringlist.split())  # 去除字符串中所有的空格
 
-            result1 = text_moderation(text)
 
-            if result1 is None:
-                result1 = '图片文字内容合格'
 
-            result1 = translate_youdao(result1)
+            if len(str_result)<27 :
+                str_result = '图片文字内容合格'
+
+            result1 = translate_youdao(str_result)
             Text_3.insert('insert', result1+'\n')  # 将结果添加到文本框显示
 
             #
