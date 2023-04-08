@@ -40,10 +40,7 @@ class Detection:
             # Folderpath = filedialog.askdirectory() #获得选择好的文件夹
 
         def OCR():
-            # 导入OCR安装路径,如果设置了系统环境,就可以不用设置了
-            #pytesseract.pytesseract.tesseract_cmd = "E:\\tesseract-ocr\\tesseract.exe"  # 此处为我的修改点
-            # os.environ['TESSDATA_PREFIX'] = 'E:\\tesseract-ocr\\tessdata'
-            # testdata_dir_config = '--tessdata-dir "C:\\ProgramFiles\\Tesseract-OCR\\tessdata"'
+
             n1 = Text_2.get(1.0, 'end')  # 获取文本框1的值
 
             result = n1[:-1]
@@ -55,77 +52,12 @@ class Detection:
             stringList = ocr(result)
             text_save("text.txt", stringList)
             str_result = run("text.txt")
-
-            # print(stringList)
-            # text = ''
-            # for i in stringList:
-            #     text = text +',' +i
-            # print(text)
-            # text = "".join(text.split())  # 去除字符串中所有的空格
-
-            # image = np.asarray(image)
-            # image  = cv2.threshold(image, 0, 255,cv2.THRESH_BINARY,cv2.THRESH_OTSU) #imgf contains Binary image
-            # a = pytesseract.image_to_string(image,lang='chi_sim')
-            # b = a.split() # 字符串按空格分割成列表
-            # c = "".join(b) # 使用一个空字符串合成列表内容生成新的字符串
-            # text="".join(a.split())#去除字符串中所有的空格
-            # print(text)
-
-
-
-            # -----------------2/29新增内容--------------------------#
-            """AC自动机"""
-            ah = ac_automation()
-            path = './sensitive_words.txt'
-            ah.parse(path)
-
-            for str in stringList:
-                str2 = ah.words_replace(str)
-                if len(str) != len(str2):
-                    result = "广告内有3号违规词:"
-                    # print(result)
-                    Text_3.insert('insert', result)  # 将结果添加到文本框显示
-
-            # 检测文本内容是否有sensitive_words_lines.txt中的违禁词
-            # fname = "sensitive_words_lines.txt"
-            # result1 = text_maching(fname, text)
-            #result1 = text_moderation(str_result)
-
             if len(str_result)<27:
                 str_result = '图片文字内容合格'
-            result1 = translate_youdao(str_result)
+            result1 = str_result
             Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
 
-            # -----------------2/28新增内容--------------------------#
-            # 检测文本内容是否有sensitive_words_lines.txt中的违禁词
-            # fname = "./sensitive_words_lines.txt"
-            # # result1 = text_maching(fname, text)
-            # # for data in result1:
-            # #     result = "广告内有违规词:" + data
-            # #     # print(result)
-            # #     Text_3.insert('insert', result)  # 将结果添加到文本框显示
-            #
-            # with open(fname, mode='r',  encoding='gb18030', errors='ignore') as f:  # 打开文件
-            #     lines = f.readlines()  # 读取所有行
-            #     # print(lines)
-            #     l = len(lines)
-            #     # print(l)
-            #
-            #     for i in range(0, l):
-            #         pattern = lines[i][:-1]  # 读取第l行
-            #         pattern = "".join(pattern)
-            #
-            #         # print(pattern)
-            #         m = re.search(pattern, text)
-            #
-            #         # print(m)
-            #         if m == None:
-            #             i += 1
-            #         else:
-            #             result = "广告内有2号违规词:" + lines[i]
-            #             # print(result)
-            #             Text_3.insert('insert', result)  # 将结果添加到文本框显示
-            #             break
+
             # -------------------nsfw识别----------------------------#
             # 清除log.txt文件内容
             with open(r'log.txt', 'a+', encoding='utf-8') as log:
@@ -179,27 +111,9 @@ class Detection:
             if len(str_result)<27 :
                 str_result = '图片文字内容合格'
 
-            result1 = translate_youdao(str_result)
+            result1 = str_result
             Text_3.insert('insert', result1+'\n')  # 将结果添加到文本框显示
 
-            #
-            # fname = "./error.txt"
-            # with open(fname, mode='r', encoding='gbk') as f:  # 打开文件
-            #     lines = f.readlines()  # 读取所有行
-            #     l = len(lines)
-            #     for i in range(0, l):
-            #         pattern = lines[i][:-1]  # 读取第l行
-            #         pattern = re.findall('[\u4e00-\u9fa5]', pattern)
-            #         pattern = "".join(pattern)
-            #         m = re.search(pattern, text)
-            #         if m == None:
-            #             i += 1
-            #         else:
-            #             result = "广告内有违规词:" + lines[i]
-            #             # print(result)
-            #             # Text_3.insert('insert', result)  # 将结果添加到文本框显示
-            #
-            #             break
 
             # -------------------nsfw识别----------------------------#
             # 清除log.txt文件内容

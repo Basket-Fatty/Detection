@@ -179,6 +179,7 @@ def text_save(filename, data):#filename为写入CSV文件的路径，data为要�
     file.close()
     print("保存文件成功")
 
+#有道翻译接口，输入中文文本，返回英文文本
 def translate_youdao(word):
     list_trans = translate(word)
     str = get_reuslt(list_trans)
