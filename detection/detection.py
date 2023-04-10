@@ -25,6 +25,7 @@ import numpy as np
 from ocr_baidu import *
 
 
+
 # Add your Varial Here: (Keep This Line of comments)
 # Define UI Class
 class Detection:

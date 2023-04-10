@@ -8,7 +8,7 @@ import re
 import string
 string.punctuation
 from DFA import *
-
+from PIL import Image
 
 
 '''
@@ -20,6 +20,17 @@ from DFA import *
 #返回文本列表
 def ocr(image_path):
     request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/webimage"
+
+
+    img = Image.open(image_path)
+    imgSize = img.size  # 图片的长和宽
+    maxSize = max(imgSize)  # 图片的长边
+    if maxSize > 4096:
+        produceImage(image_path,1023,4095,'1.jpg')
+        image_path = '1.jpg'
+
+
+
     # 二进制方式打开图片文件
     f = open(image_path, 'rb')
     img = base64.b64encode(f.read())
@@ -185,6 +196,11 @@ def translate_youdao(word):
     str = get_reuslt(list_trans)
     return  str
 
+#切割图片
+def produceImage(file_in, width, height, file_out):
+    image = Image.open(file_in)
+    resized_image = image.resize((width, height), Image.ANTIALIAS)
+    resized_image.save(file_out)
 
 if  __name__ == '__main__':
     imagepath ="C:/Users/10570/Desktop/毕设/FinancialMediaDetection-v2/FinancialMediaDetection/detection/data/small_picture/3D蒸汽热敷眼罩(1).jpg"
