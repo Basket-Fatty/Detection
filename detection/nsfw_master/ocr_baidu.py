@@ -9,28 +9,20 @@ import string
 string.punctuation
 from DFA import *
 from PIL import Image
-
+import math
+import cv2
 
 '''
 网络图片文字识别
 '''
 
 
+
+
 #输入图片地址
 #返回文本列表
 def ocr(image_path):
     request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/webimage"
-
-
-    img = Image.open(image_path)
-    imgSize = img.size  # 图片的长和宽
-    maxSize = max(imgSize)  # 图片的长边
-    if maxSize > 4096:
-        produceImage(image_path,1023,4095,'1.jpg')
-        image_path = '1.jpg'
-
-
-
     # 二进制方式打开图片文件
     f = open(image_path, 'rb')
     img = base64.b64encode(f.read())
@@ -201,6 +193,41 @@ def produceImage(file_in, width, height, file_out):
     image = Image.open(file_in)
     resized_image = image.resize((width, height), Image.ANTIALIAS)
     resized_image.save(file_out)
+
+
+"""
+This is a large image ocr function.
+
+Parameters:
+ param1 - Image address
+
+Returns:
+ Return a text list
+"""
+def final_ocr(image_path):
+    im = Image.open(image_path)
+    img_size = im.size
+    m = img_size[0]  # 读取图片的宽度
+    n = img_size[1]  # 读取图片的高度
+    w = 10  # 设置你要裁剪的小图的宽度
+    h = 10  # 设置你要裁剪的小图的高度
+
+    image_num = math.ceil(n/4096)
+    for i in range(image_num):  # 裁剪为100张随机的小图
+        if (i+1)*4096 < n:
+            region = im.crop((0, i*4096, m, (i+1)*4096) ) # 裁剪区域
+        else:
+            region = im.crop((0, i * 4096, m, n))  # 裁剪区域
+
+        region.save("" + str(i) + ".jpg")  # str(i)是裁剪后的编号，此处是0到99
+
+    #根据切的份数，进行ocr
+    resultlist = []
+    for i in range(image_num):
+        resultlist = resultlist +ocr("" + str(i) + ".jpg")
+
+    return resultlist
+
 
 if  __name__ == '__main__':
     imagepath ="C:/Users/10570/Desktop/毕设/FinancialMediaDetection-v2/FinancialMediaDetection/detection/data/small_picture/3D蒸汽热敷眼罩(1).jpg"

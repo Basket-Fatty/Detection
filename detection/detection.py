@@ -50,7 +50,7 @@ class Detection:
             image = Image.open(result)
             # -----------------2/29新增内容--------------------------#
             # 调用ocr方法（百度文字识别API）识别文字
-            stringList = ocr(result)
+            stringList = final_ocr(result)
             text_save("text.txt", stringList)
             str_result = run("text.txt")
             if len(str_result)<27:
@@ -101,7 +101,7 @@ class Detection:
             # 打开要识别的图片
             # image = Image.open(path)
             # a = pytesseract.image_to_string(image, lang='chi_sim')
-            stringlist =  ocr(path)
+            stringlist =  final_ocr(path)
             text = ''
             text_save("text.txt", stringlist)
             str_result = run("text.txt")
