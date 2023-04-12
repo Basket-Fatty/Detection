@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/detection/nsfw_master" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/detection/nsfw_master/data" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.5 (tensorflow1.2.00)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
