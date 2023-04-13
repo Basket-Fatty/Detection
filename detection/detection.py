@@ -53,7 +53,7 @@ class Detection:
             stringList = final_ocr(result)
             text_save("text.txt", stringList)
             str_result = run("text.txt")
-            if len(str_result)<27:
+            if len(str_result)<28:
                 str_result = '图片文字内容合格'
             result1 = str_result
             Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
@@ -109,7 +109,7 @@ class Detection:
 
 
 
-            if len(str_result)<27 :
+            if len(str_result)<28 :
                 str_result = '图片文字内容合格'
 
             result1 = str_result
@@ -198,7 +198,8 @@ class Detection:
                 int(result.iloc[i, [0]]['ID']), content, result.iloc[i, [2]]['更新时间'],
                 result.iloc[i, [3]]['识别结果']))  # #给第0⾏添加数据,索引值可重复
 
-        def Statistics(num):
+
+        def Statistics(num):#画图
 
             Canvas_1 = Fun.BuildChart('Pie', uiName, Form_1, 'Canvas_1')
             Fun.Register(uiName, 'Canvas_1', Canvas_1)
@@ -226,7 +227,7 @@ class Detection:
                                             overstrike=0)
             Label_10.configure(font=Label_10_Ft)
 
-            Label_12 = tkinter.Label(Form_1, text="Number" + str(num) + "pictures, results are following:")
+            Label_12 = tkinter.Label(Form_1, text="Number " + str(num) + "pictures, results are following:")
             Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
             Fun.SetControlPlace(uiName, 'Label_12', 100, 200, 400, 30)
             Label_12.configure(bg="#ffffff")

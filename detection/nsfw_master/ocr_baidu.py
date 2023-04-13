@@ -226,6 +226,8 @@ def final_ocr(image_path):
     for i in range(image_num):
         resultlist = resultlist +ocr("" + str(i) + ".jpg")
 
+    resultlist = list(set(resultlist))
+
     return resultlist
 
 
