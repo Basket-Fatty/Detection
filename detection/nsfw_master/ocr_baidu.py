@@ -44,20 +44,6 @@ def ocr(image_path):
     return newlist
 
 
-
-# def changeImage(path, pra):
-#     # img = cv2.imread(path, 1)
-#     #pra为缩放的倍率
-#     width,height  = img.shape[:2]
-#     #此处要做integer强转,因为.resize接收的参数为形成新图像的长宽像素点个数
-#     size = (int(height*pra), int(width*pra))
-#     # img_new = cv2.resize(img, size, interpolation=cv2.INTER_AREA)
-#     os.path.join('nsfw_master\data', '11.jpg')  # 保存的图片与原始图片同名
-#
-#     return 'nsfw_master/data'+ '/11'
-
-
-
 # 违规文字匹配
 # 输入违规文字库地址 ，检测文字
 # 输出违规提示文本列表
@@ -209,8 +195,6 @@ def final_ocr(image_path):
     img_size = im.size
     m = img_size[0]  # 读取图片的宽度
     n = img_size[1]  # 读取图片的高度
-    w = 10  # 设置你要裁剪的小图的宽度
-    h = 10  # 设置你要裁剪的小图的高度
 
     image_num = math.ceil(n/4096)
     for i in range(image_num):  # 裁剪为100张随机的小图
@@ -218,6 +202,8 @@ def final_ocr(image_path):
             region = im.crop((0, i*4096, m, (i+1)*4096) ) # 裁剪区域
         else:
             region = im.crop((0, i * 4096, m, n))  # 裁剪区域
+        if region.mode == "RGBA":
+            region = region.convert('RGB')
 
         region.save("" + str(i) + ".jpg")  # str(i)是裁剪后的编号，此处是0到99
 

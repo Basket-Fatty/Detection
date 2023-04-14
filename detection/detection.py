@@ -56,7 +56,7 @@ class Detection:
             if len(str_result)<28:
                 str_result = '图片文字内容合格'
             result1 = str_result
-            Text_3.insert('insert', result1+'\n' )  # 将结果添加到文本框显示
+            Text_3.insert('insert', result1+'\n\n' )  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
@@ -113,7 +113,7 @@ class Detection:
                 str_result = '图片文字内容合格'
 
             result1 = str_result
-            Text_3.insert('insert', result1+'\n')  # 将结果添加到文本框显示
+            Text_3.insert('insert', result1+'\n\n')  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
