@@ -119,6 +119,7 @@ def run(text):
     for item in newlist:#提取列表列表
         newlist2.append(item[0])
     #print(newlist2)
+    newlist2 = list(set(newlist2))
     strResult = 'Contains prohibited words:'
 
     strResult= strResult+ ' '.join(newlist2)
