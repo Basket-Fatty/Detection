@@ -10,7 +10,7 @@ string.punctuation
 from DFA import *
 from PIL import Image
 import math
-import cv2
+# import cv2
 
 '''
 网络图片文字识别
