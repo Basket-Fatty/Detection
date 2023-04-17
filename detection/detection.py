@@ -210,6 +210,8 @@ class Detection:
             Fun.Register(uiName, 'Canvas_2', Canvas_2)
             Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
             detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
+
+            # 两张图表盖住了以下标签
             Label_9 = tkinter.Label(Form_1, text="Illegal")
             Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
             Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
@@ -218,6 +220,7 @@ class Detection:
             Label_9_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                            overstrike=0)
             Label_9.configure(font=Label_9_Ft)
+
             Label_10 = tkinter.Label(Form_1, text="Qualified")
             Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
             Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
@@ -229,16 +232,16 @@ class Detection:
 
             Label_12 = tkinter.Label(Form_1, text="Number " + str(num) + "pictures, results are following:")
             Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
-            Fun.SetControlPlace(uiName, 'Label_12', 100, 200, 400, 30)
+            Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 400, 30)
             Label_12.configure(bg="#ffffff")
             Label_12.configure(relief="flat")
             Label_12_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
             Label_12.configure(font=Label_12_Ft)
 
-            Label_13 = tkinter.Label(Form_1, text="A-Cosmetics,B-Health Care Products,C-Daily Necessities,\nD-Medicine,E-Education")
+            Label_13 = tkinter.Label(Form_1, text="A-Cosmetics B-Health Care\nC-Daily Necessities D-Medicine\nE-Education")
             Fun.Register(uiName, 'Label_13', Label_13, 'legend')
-            Fun.SetControlPlace(uiName, 'Label_13', 15, 450, 240, 30)
+            Fun.SetControlPlace(uiName, 'Label_13', 15, 450, 240, 60)
             Label_13.configure(bg="#ffffff")
             Label_13.configure(relief="flat")
             Label_13_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
