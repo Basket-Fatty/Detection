@@ -126,15 +126,20 @@ class Detection:
             # 讲测试结果放入log.txt文件内
             os.system(p)
 
-            # 读取log.txt
-            with open(r'log.txt', mode='r') as log:
-                content1 = log.read()
+            # # 读取log.txt
+            # with open(r'log.txt', mode='r') as log:
+            #     content1 = log.read()
 
             '''
             str=str+','+content1
             data=[int(x) for x in str.split(',')]
             '''
-            result1 = result1 + content1
+            # result1 = result1 + content1
+
+            with open(r'log.txt', mode='r', encoding='utf-8') as log:
+                content1 = log.read()
+
+            Text_3.insert('insert', content1)  # 将结果添加到文本框显示
             # 格式化时间
             time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
