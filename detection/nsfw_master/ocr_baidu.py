@@ -28,7 +28,7 @@ def ocr(image_path):
     img = base64.b64encode(f.read())
 
     params = {"image": img}
-    access_token = '24.900e8ceaafc5011d91a1df481ca4ae15.2592000.1683374449.282335-32072986'
+    access_token = '24.4f980e2eae5d2ccf03d4083bccefc6f9.2592000.1686139782.282335-32072986'
     request_url = request_url + "?access_token=" + access_token
     headers = {'content-type': 'application/x-www-form-urlencoded'}
     response = requests.post(request_url, data=params, headers=headers)
