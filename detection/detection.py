@@ -24,7 +24,7 @@ from AC_automata import ac_automation
 import numpy as np
 from ocr_baidu import *
 #dsasd
-
+#test
 
 # Add your Varial Here: (Keep This Line of comments)
 # Define UI Class
