@@ -1,6 +1,9 @@
 # coding=utf-8
 # import libs
 import sys
+
+from ttkbootstrap import Style
+
 import detection_cmd
 import Fun
 import os
@@ -28,6 +31,10 @@ from ocr_baidu import *
 
 # Add your Varial Here: (Keep This Line of comments)
 # Define UI Class
+
+
+style = Style(theme='minty')
+
 class Detection:
     def __init__(self, root, isTKroot=True):
         def openFile():
@@ -237,7 +244,7 @@ class Detection:
 
             Label_12 = tkinter.Label(Form_1, text="Number " + str(count) + " pictures, results are following:")
             Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
-            Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 400, 30)
+            Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 500, 50)
             Label_12.configure(bg="#ffffff")
             Label_12.configure(relief="flat")
             Label_12_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
@@ -246,7 +253,7 @@ class Detection:
 
             Label_13 = tkinter.Label(Form_1, text="A-Qualified B-Not Qualified")
             Fun.Register(uiName, 'Label_13', Label_13, 'legend')
-            Fun.SetControlPlace(uiName, 'Label_13', 180, 450, 240, 30)
+            Fun.SetControlPlace(uiName, 'Label_13', 50, 450, 500, 50)
             Label_13.configure(bg="#ffffff")
             Label_13.configure(relief="flat")
             Label_13_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
@@ -261,7 +268,7 @@ class Detection:
         Fun.Register(uiName, 'root', root)
         # style = detection_sty.SetupStyle()
         if isTKroot == True:
-            root.title("INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
+            root.title("Internet Illegal Advertisement Recognition")
             Fun.CenterDlg(uiName, root, 1200, 600)
             root['background'] = '#efefef'
         Form_1 = tkinter.Canvas(root, width=10, height=4)
@@ -270,9 +277,9 @@ class Detection:
         Form_1.configure(highlightthickness=0)
         Fun.Register(uiName, 'Form_1', Form_1)
         # Create the elements of root
-        Label_1 = tkinter.Label(Form_1, text="INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
+        Label_1 = tkinter.Label(Form_1, text="Internet Illegal Advertisement Recognition")
         Fun.Register(uiName, 'Label_1', Label_1, 'INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION')
-        Fun.SetControlPlace(uiName, 'Label_1', 250, 0, 737, 50)
+        Fun.SetControlPlace(uiName, 'Label_1', 0, 0, 1250, 50)
         Label_1.configure(relief="flat")
         Label_1_Ft = tkinter.font.Font(family='华文新魏', size=20, weight='bold', slant='roman', underline=0, overstrike=0)
         Label_1.configure(font=Label_1_Ft)
@@ -305,13 +312,13 @@ class Detection:
         Text_1.configure(relief="sunken")
         Button_1 = tkinter.Button(Form_1, text="Choose", command=findfiles)
         Fun.Register(uiName, 'Button_1', Button_1, 'Choose')
-        Fun.SetControlPlace(uiName, 'Button_1', 320, 80, 120, 40)
+        Fun.SetControlPlace(uiName, 'Button_1', 325, 80, 120, 40)
         Button_1_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_1.configure(font=Button_1_Ft)
         Button_2 = tkinter.Button(Form_1, text="Recognition", command=identification)
         Fun.Register(uiName, 'Button_2', Button_2, 'Recognition')
-        Fun.SetControlPlace(uiName, 'Button_2', 440, 80, 100, 40)
+        Fun.SetControlPlace(uiName, 'Button_2', 450, 80, 120, 40)
         Button_2_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_2.configure(font=Button_2_Ft)
@@ -328,13 +335,13 @@ class Detection:
         Fun.SetControlPlace(uiName, 'ListBox_3', 600, 350, 600, 250)
         Button_3 = tkinter.Button(Form_1, text="Choose", command=openFile)
         Fun.Register(uiName, 'Button_3', Button_3, 'Choose')
-        Fun.SetControlPlace(uiName, 'Button_3', 920, 80, 100, 40)
+        Fun.SetControlPlace(uiName, 'Button_3', 925, 80, 120, 40)
         Button_3_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_3.configure(font=Button_3_Ft)
         Button_4 = tkinter.Button(Form_1, text="Recognition", command=OCR)
         Fun.Register(uiName, 'Button_4', Button_4, 'Single Recognition')
-        Fun.SetControlPlace(uiName, 'Button_4', 1020, 80, 100, 40)
+        Fun.SetControlPlace(uiName, 'Button_4', 1050, 80, 120, 40)
         Button_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
         Button_4.configure(font=Button_4_Ft)
@@ -352,7 +359,7 @@ class Detection:
         Text_2.configure(relief="sunken")
         Text_3 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_3', Text_3, 'Picture Result')
-        Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 350, 160)
+        Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 400, 160)
         Text_3.configure(relief="sunken")
         Label_6 = tkinter.Label(Form_1, text="History")
         Fun.Register(uiName, 'Label_6', Label_6, 'History Query')
@@ -382,19 +389,19 @@ class Detection:
 
         Label_8 = tkinter.Label(Form_1, text="Picture Name:")
         Fun.Register(uiName, 'Label_8', Label_8, 'File Name')
-        Fun.SetControlPlace(uiName, 'Label_8', 652, 385, 100, 20)
+        Fun.SetControlPlace(uiName, 'Label_8', 652, 385, 100, 25)
         Label_8.configure(relief="flat")
         Entry_1_Variable = Fun.AddTKVariable(uiName, 'Entry_1', '')
         Entry_1 = tkinter.Entry(Form_1, textvariable=Entry_1_Variable)
         Fun.Register(uiName, 'Entry_1', Entry_1, 'Picture Name')
-        Fun.SetControlPlace(uiName, 'Entry_1', 752, 385, 120, 20)
+        Fun.SetControlPlace(uiName, 'Entry_1', 752, 385, 120, 25)
         Entry_1.configure(relief="sunken")
         Button_5 = tkinter.Button(Form_1, text="Search", command=query)
         Fun.Register(uiName, 'Button_5', Button_5, 'Search')
-        Fun.SetControlPlace(uiName, 'Button_5', 865, 384, 100, 28)
+        Fun.SetControlPlace(uiName, 'Button_5', 880, 384, 100, 25)
         Button_6 = tkinter.Button(Form_1, text="More", command=openExcel)
         Fun.Register(uiName, 'Button_6', Button_6, 'More')
-        Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 28)
+        Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 25)
 
         # Add Some Logic Code Here: (Keep This Line of comments)
         # Statistics(3)
