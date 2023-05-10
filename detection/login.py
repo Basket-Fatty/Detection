@@ -40,14 +40,15 @@ root.title('Login')
 # 设置窗口大小
 root['height'] = 300
 root['width'] = 600
-Title = tkinter.Label(root, text='Advertising Identification',fg='#3eb489', font=("Sonder", 20), justify=tkinter.RIGHT,
+
+Title = tkinter.Label(root, text='Advertising Identification',bg='#ffffff',fg='#5F8A95', font=("Sonder", 20), justify=tkinter.RIGHT,
                       anchor='e', width=200)
 # 显示该组件的位置及大小
 Title.place(x=90, y=30, width=400, height=30)
 
 # 在窗口上创建标签组件（User Name）
 # 各个参数的解释：       text设置文本内容    fg='设置字体颜色'    bg='设置字体背景'    font=("设置字体",设置字体大小)    justify=文本标签对齐的方式    anchor='文本对其方式', width=设置的宽度
-labeName = tkinter.Label(root, text='User name：', fg='#3eb489',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
+labeName = tkinter.Label(root, text='User name：',bg='#ffffff', fg='#5F8A95',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
 # 显示该组件的位置及大小
 labeName.place(x=120, y=80, width=125, height=25)
 
@@ -57,7 +58,7 @@ entryName = tkinter.Entry(root, width=80, textvariable=varName)
 entryName.place(x=250, y=80, width=180, height=25)
 
 # 在窗口上创建标签组件（User Pwd）
-labeName = tkinter.Label(root, text='Password：', fg='#3eb489',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
+labeName = tkinter.Label(root, text='Password：', bg='#ffffff',fg='#5F8A95',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
 # 显示该组件的位置及大小
 labeName.place(x=120, y=120, width=125, height=25)
 
@@ -78,7 +79,7 @@ except:
 # 记住我，复选框
 rememberMe = tkinter.IntVar(root, value=1)
 # 选中时变量值为1，未选中时变量值为0，默认选中
-checkRemember = tkinter.Checkbutton(root, text='Remember password', fg='#3eb489',font=("Sonder", 14), variable=rememberMe,
+checkRemember = tkinter.Checkbutton(root, text='Remember password', bg='#ffffff',fg='#5F8A95',font=("Sonder", 14), variable=rememberMe,
                                     onvalue=1, offvalue=0)
 checkRemember.place(x=150, y=170, width=200, height=25)
 
@@ -196,25 +197,35 @@ def user_register():
     window_sign_up = tkinter.Toplevel(root)
     window_sign_up.geometry('350x200')
     window_sign_up.title('Welcome to register')
+    window_sign_up.configure(bg='#ffffff')
 
     # 注册账号及标签、输入框
     new_name = tkinter.StringVar()
-    tkinter.Label(window_sign_up, text='Username：').place(x=50, y=10)
+    labeName = tkinter.Label(window_sign_up,text='Username ：', bg='#ffffff', fg='#5F8A95', font=("Segoe UI", 12))
+    labeName.place(x=50, y=10)
+    #tkinter.Label(window_sign_up, text='Username：').place(x=50, y=10)
     tkinter.Entry(window_sign_up, textvariable=new_name).place(x=150, y=10)
+
 
     # 注册密码及标签、输入框
     new_password = tkinter.StringVar()
-    tkinter.Label(window_sign_up, text='Password：').place(x=50, y=50)
+    labeName = tkinter.Label(window_sign_up, text='Password  ：', bg='#ffffff', fg='#5F8A95', font=("Segoe UI", 12))
+    labeName.place(x=50, y=50)
+    #tkinter.Label(window_sign_up, text='Password：').place(x=50, y=50)
     tkinter.Entry(window_sign_up, textvariable=new_password, show='*').place(x=150, y=50)
 
     # 重复密码及标签、输入框
     new_password_confirm = tkinter.StringVar()
-    tkinter.Label(window_sign_up, text='Confirm：').place(x=50, y=90)
+    labeName = tkinter.Label(window_sign_up, text='Confirm    ：', bg='#ffffff', fg='#5F8A95', font=("Segoe UI", 12))
+    labeName.place(x=50, y=90)
+    #tkinter.Label(window_sign_up, text='Confirm：').place(x=50, y=90)
     tkinter.Entry(window_sign_up, textvariable=new_password_confirm, show='*').place(x=150, y=90)
+
 
     # 确认注册按钮及位置
     bt_confirm_sign_up = tkinter.Button(window_sign_up, text='Affirm', command=register_confirm)
     bt_confirm_sign_up.place(x=150, y=130)
+    bt_confirm_sign_up.configure(bg='#3eb489', fg='#ffffff')
 
 
 # 创建按钮组件，同时设置按钮事件处理函数
@@ -238,5 +249,6 @@ buttonCancel = tkinter.Button(root, text='Cancel', command=cancel,bg='#3eb489',f
 buttonCancel.place(x=330, y=215, width=80, height=25)
 
 # 启动消息循环
+root['background'] = '#ffffff'
 root.mainloop()
 
