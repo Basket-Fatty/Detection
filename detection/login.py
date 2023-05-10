@@ -40,15 +40,14 @@ root.title('Login')
 # 设置窗口大小
 root['height'] = 300
 root['width'] = 600
-
-Title = tkinter.Label(root, text='Advertising identification', fg='black', font=("华文新魏", 25), justify=tkinter.RIGHT,
+Title = tkinter.Label(root, text='Advertising Identification',fg='#3eb489', font=("Sonder", 20), justify=tkinter.RIGHT,
                       anchor='e', width=200)
 # 显示该组件的位置及大小
 Title.place(x=90, y=30, width=400, height=30)
 
 # 在窗口上创建标签组件（User Name）
 # 各个参数的解释：       text设置文本内容    fg='设置字体颜色'    bg='设置字体背景'    font=("设置字体",设置字体大小)    justify=文本标签对齐的方式    anchor='文本对其方式', width=设置的宽度
-labeName = tkinter.Label(root, text='User name：', font=("华文新魏", 16), justify=tkinter.RIGHT, anchor='e', width=80)
+labeName = tkinter.Label(root, text='User name：', fg='#3eb489',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
 # 显示该组件的位置及大小
 labeName.place(x=120, y=80, width=125, height=25)
 
@@ -58,7 +57,7 @@ entryName = tkinter.Entry(root, width=80, textvariable=varName)
 entryName.place(x=250, y=80, width=180, height=25)
 
 # 在窗口上创建标签组件（User Pwd）
-labeName = tkinter.Label(root, text='Password：', font=("华文新魏", 16), justify=tkinter.RIGHT, anchor='e', width=80)
+labeName = tkinter.Label(root, text='Password：', fg='#3eb489',font=("Sonder", 16), justify=tkinter.RIGHT, anchor='e', width=80)
 # 显示该组件的位置及大小
 labeName.place(x=120, y=120, width=125, height=25)
 
@@ -79,7 +78,7 @@ except:
 # 记住我，复选框
 rememberMe = tkinter.IntVar(root, value=1)
 # 选中时变量值为1，未选中时变量值为0，默认选中
-checkRemember = tkinter.Checkbutton(root, text='Remember password', font=("华文新魏", 14), variable=rememberMe,
+checkRemember = tkinter.Checkbutton(root, text='Remember password', fg='#3eb489',font=("Sonder", 14), variable=rememberMe,
                                     onvalue=1, offvalue=0)
 checkRemember.place(x=150, y=170, width=200, height=25)
 
@@ -221,10 +220,10 @@ def user_register():
 # 创建按钮组件，同时设置按钮事件处理函数
 # 参数解释：  text='Login'文本内容      activeforeground='#ff0000'按下按钮时文字颜色     command=login关联的函数
 # buttonOk = tkinter.Button(root, text='登录', activeforeground='#ff0000', command=user_login_mysql)
-buttonOk = tkinter.Button(root, text='Login', activeforeground='#ff0000', command=user_login)
+buttonOk = tkinter.Button(root, text='Login', activeforeground='#ff0000', bg='#3eb489',fg='#ffffff',command=user_login)
 buttonOk.place(x=170, y=215, width=80, height=25)
 
-buttonRegister = tkinter.Button(root, text='Register', activeforeground='#ff0000', command=user_register)
+buttonRegister = tkinter.Button(root, text='Register', activeforeground='#ff0000', bg='#3eb489',fg='#ffffff',command=user_register)
 buttonRegister.place(x=250, y=215, width=80, height=25)
 
 
@@ -235,7 +234,7 @@ def cancel():
     varPwd.set('')
 
 
-buttonCancel = tkinter.Button(root, text='Cancel', command=cancel)
+buttonCancel = tkinter.Button(root, text='Cancel', command=cancel,bg='#3eb489',fg='#ffffff')
 buttonCancel.place(x=330, y=215, width=80, height=25)
 
 # 启动消息循环

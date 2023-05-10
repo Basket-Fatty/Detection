@@ -2,7 +2,7 @@
 # import libs
 import sys
 
-from ttkbootstrap import Style
+#from ttkbootstrap import Style
 
 import detection_cmd
 import Fun
@@ -10,10 +10,10 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='1' # 这是默认的显示等级，显示所有信息
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error
-import tkinter
+import tkinter as tk
 from tkinter import *
 import tkinter.ttk
-import tkinter.font
+import tkinter.font as tf
 from tkinter import filedialog
 from PIL import Image
 import re
@@ -33,7 +33,7 @@ from ocr_baidu import *
 # Define UI Class
 
 
-style = Style(theme='minty')
+#style = Style(theme='minty')
 
 class Detection:
     def __init__(self, root, isTKroot=True):
@@ -247,16 +247,16 @@ class Detection:
             Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 500, 50)
             Label_12.configure(bg="#ffffff")
             Label_12.configure(relief="flat")
-            Label_12_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+            Label_12_Ft = tkinter.font.Font(family='#5F8A95', size=12, weight='bold', slant='roman', underline=0,
                                             overstrike=0)
-            Label_12.configure(font=Label_12_Ft)
+            Label_12.configure(font=Label_12_Ft,fg='#5F8A95')
 
             Label_13 = tkinter.Label(Form_1, text="A-Qualified B-Not Qualified")
             Fun.Register(uiName, 'Label_13', Label_13, 'legend')
             Fun.SetControlPlace(uiName, 'Label_13', 50, 450, 500, 50)
-            Label_13.configure(bg="#ffffff")
+            Label_13.configure(bg="#ffffff",fg='#5F8A95')
             Label_13.configure(relief="flat")
-            Label_13_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+            Label_13_Ft = tkinter.font.Font(family='Segoe UI', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
             Label_13.configure(font=Label_13_Ft)
 
@@ -270,10 +270,10 @@ class Detection:
         if isTKroot == True:
             root.title("Internet Illegal Advertisement Recognition")
             Fun.CenterDlg(uiName, root, 1200, 600)
-            root['background'] = '#efefef'
+            root['background'] = '#b4ecc4'
         Form_1 = tkinter.Canvas(root, width=10, height=4)
         Form_1.pack(fill=BOTH, expand=True)
-        Form_1.configure(bg="#efefef")
+        Form_1.configure(bg="#b4ecc4")
         Form_1.configure(highlightthickness=0)
         Fun.Register(uiName, 'Form_1', Form_1)
         # Create the elements of root
@@ -281,8 +281,9 @@ class Detection:
         Fun.Register(uiName, 'Label_1', Label_1, 'INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION')
         Fun.SetControlPlace(uiName, 'Label_1', 0, 0, 1250, 50)
         Label_1.configure(relief="flat")
-        Label_1_Ft = tkinter.font.Font(family='华文新魏', size=20, weight='bold', slant='roman', underline=0, overstrike=0)
-        Label_1.configure(font=Label_1_Ft)
+        Label_1_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0, overstrike=0)
+        Label_1.configure(font=Label_1_Ft,bg='#ffffff',fg='#5F8A95')
+
         ListBox_1 = tkinter.Listbox(Form_1)
         Fun.Register(uiName, 'ListBox_1', ListBox_1, 'Single Recognition')
         Fun.SetControlPlace(uiName, 'ListBox_1', 600, 50, 600, 300)
@@ -290,89 +291,95 @@ class Detection:
         Fun.Register(uiName, 'ListBox_2', ListBox_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'ListBox_2', 0, 50, 600, 550)
         Label_2 = tkinter.Label(Form_1, text="Batch Process")
+        Label_2_Ft = tkinter.font.Font(family='Segoe UI', size=10, weight='bold', slant='roman', underline=0,overstrike=0)
+        Label_2.configure(font=Label_2_Ft,bg='#ffffff',fg='#5F8A95')
         Fun.Register(uiName, 'Label_2', Label_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'Label_2', 0, 50, 100, 20)
         Label_2.configure(relief="flat")
         Label_3 = tkinter.Label(Form_1, text="Single Process")
         Fun.Register(uiName, 'Label_3', Label_3, 'Single Process')
         Fun.SetControlPlace(uiName, 'Label_3', 600, 50, 100, 20)
+        Label_3.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
         Label_3.configure(relief="flat")
         Label_4 = tkinter.Label(Form_1, text="Folder Path:")
         Fun.Register(uiName, 'Label_4', Label_4, 'Folder Path')
         Fun.SetControlPlace(uiName, 'Label_4', 20, 80, 150, 40)
-        Label_4.configure(bg="#ffffff")
+
         Label_4.configure(relief="flat")
-        Label_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Label_4_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
                                        overstrike=0)
-        Label_4.configure(font=Label_4_Ft)
+        Label_4.configure(font=Label_4_Ft,bg='#ffffff',fg='#5F8A95')
         Text_1 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_1', Text_1, 'Enter Path')
         Fun.SetControlPlace(uiName, 'Text_1', 170, 80, 150, 40)
-        Text_1.configure(bg="#ffffff")
+        Text_1.configure(bg="#ffffff",fg='#5F8A95')
         Text_1.configure(relief="sunken")
         Button_1 = tkinter.Button(Form_1, text="Choose", command=findfiles)
         Fun.Register(uiName, 'Button_1', Button_1, 'Choose')
         Fun.SetControlPlace(uiName, 'Button_1', 325, 80, 120, 40)
-        Button_1_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Button_1_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_1.configure(font=Button_1_Ft)
+        Button_1.configure(font=Button_1_Ft,bg='#3eb489',fg='#ffffff')
         Button_2 = tkinter.Button(Form_1, text="Recognition", command=identification)
         Fun.Register(uiName, 'Button_2', Button_2, 'Recognition')
         Fun.SetControlPlace(uiName, 'Button_2', 450, 80, 120, 40)
-        Button_2_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Button_2_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_2.configure(font=Button_2_Ft)
+        Button_2.configure(font=Button_2_Ft,bg='#3eb489',fg='#ffffff')
         Label_5 = tkinter.Label(Form_1, text="Picture Path:")
         Fun.Register(uiName, 'Label_5', Label_5, 'Picture Path')
         Fun.SetControlPlace(uiName, 'Label_5', 620, 80, 150, 40)
         Label_5.configure(bg="#ffffff")
         Label_5.configure(relief="flat")
-        Label_5_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Label_5_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
                                        overstrike=0)
-        Label_5.configure(font=Label_5_Ft)
+        Label_5.configure(font=Label_5_Ft,bg='#ffffff',fg='#5F8A95')
         ListBox_3 = tkinter.Listbox(Form_1)
         Fun.Register(uiName, 'ListBox_3', ListBox_3, 'History')
         Fun.SetControlPlace(uiName, 'ListBox_3', 600, 350, 600, 250)
         Button_3 = tkinter.Button(Form_1, text="Choose", command=openFile)
         Fun.Register(uiName, 'Button_3', Button_3, 'Choose')
         Fun.SetControlPlace(uiName, 'Button_3', 925, 80, 120, 40)
-        Button_3_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Button_3_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_3.configure(font=Button_3_Ft)
+        Button_3.configure(font=Button_3_Ft,bg='#3eb489',fg='#ffffff')
         Button_4 = tkinter.Button(Form_1, text="Recognition", command=OCR)
         Fun.Register(uiName, 'Button_4', Button_4, 'Single Recognition')
         Fun.SetControlPlace(uiName, 'Button_4', 1050, 80, 120, 40)
-        Button_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Button_4_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_4.configure(font=Button_4_Ft)
+        Button_4.configure(font=Button_4_Ft,bg='#3eb489',fg='#ffffff')
         Label_6 = tkinter.Label(Form_1, text="Result:")
         Fun.Register(uiName, 'Label_6', Label_6, 'Single Result')
         Fun.SetControlPlace(uiName, 'Label_6', 620, 120, 150, 40)
         Label_6.configure(bg="#ffffff")
         Label_6.configure(relief="flat")
-        Label_6_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Label_6_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
                                        overstrike=0)
-        Label_6.configure(font=Label_6_Ft)
+        Label_6.configure(font=Label_6_Ft,bg='#ffffff',fg='#5F8A95')
         Text_2 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_2', Text_2, 'Access Image Address')
         Fun.SetControlPlace(uiName, 'Text_2', 770, 80, 150, 40)
+        Text_2.configure(bg="#ffffff", fg='#5F8A95')
         Text_2.configure(relief="sunken")
         Text_3 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_3', Text_3, 'Picture Result')
         Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 400, 160)
+        Text_3.configure(bg="#ffffff", fg='#5F8A95')
         Text_3.configure(relief="sunken")
-        Label_6 = tkinter.Label(Form_1, text="History")
-        Fun.Register(uiName, 'Label_6', Label_6, 'History Query')
-        Fun.SetControlPlace(uiName, 'Label_6', 600, 350, 100, 20)
-        Label_5.configure(relief="flat")
+        Label_20 = tkinter.Label(Form_1, text="History")
+        Label_20.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
+        Fun.Register(uiName, 'Label_20', Label_20, 'History Query')
+        Fun.SetControlPlace(uiName, 'Label_20', 600, 350, 100, 20)
+        Label_20.configure(relief="flat")
         Label_7 = tkinter.Label(Form_1, text="Result:")
         Fun.Register(uiName, 'Label_7', Label_7, 'Batch Result')
         Fun.SetControlPlace(uiName, 'Label_7', 20, 120, 150, 40)
         Label_7.configure(bg="#ffffff")
         Label_7.configure(relief="flat")
-        Label_7_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+        Label_7_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
                                        overstrike=0)
-        Label_7.configure(font=Label_7_Ft)
+        Label_7.configure(font=Label_7_Ft,bg='#ffffff',fg='#5F8A95')
         ListView_1 = tkinter.ttk.Treeview(Form_1, show="headings")
         Fun.Register(uiName, 'ListView_1', ListView_1)
         Fun.SetControlPlace(uiName, 'ListView_1', 620, 420, 560, 160)
@@ -389,7 +396,8 @@ class Detection:
 
         Label_8 = tkinter.Label(Form_1, text="Picture Name:")
         Fun.Register(uiName, 'Label_8', Label_8, 'File Name')
-        Fun.SetControlPlace(uiName, 'Label_8', 652, 385, 100, 25)
+        Fun.SetControlPlace(uiName, 'Label_8', 648, 385, 100, 25)
+        Label_8.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
         Label_8.configure(relief="flat")
         Entry_1_Variable = Fun.AddTKVariable(uiName, 'Entry_1', '')
         Entry_1 = tkinter.Entry(Form_1, textvariable=Entry_1_Variable)
@@ -399,9 +407,15 @@ class Detection:
         Button_5 = tkinter.Button(Form_1, text="Search", command=query)
         Fun.Register(uiName, 'Button_5', Button_5, 'Search')
         Fun.SetControlPlace(uiName, 'Button_5', 880, 384, 100, 25)
+        Button_5_Ft = tkinter.font.Font(family='Sonder', size=10, weight='normal', slant='roman', underline=0,
+                                        overstrike=0)
+        Button_5.configure(font=Button_5_Ft, bg='#3eb489', fg='#ffffff')
         Button_6 = tkinter.Button(Form_1, text="More", command=openExcel)
         Fun.Register(uiName, 'Button_6', Button_6, 'More')
         Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 25)
+        Button_6_Ft = tkinter.font.Font(family='Sonder', size=10, weight='normal', slant='roman', underline=0,
+                                        overstrike=0)
+        Button_6.configure(font=Button_5_Ft, bg='#3eb489', fg='#ffffff')
 
         # Add Some Logic Code Here: (Keep This Line of comments)
         # Statistics(3)
