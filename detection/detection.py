@@ -1,19 +1,17 @@
 # coding=utf-8
 # import libs
 import sys
-
-#from ttkbootstrap import Style
-
 import detection_cmd
 import Fun
 import os
+import facecompare
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='1' # 这是默认的显示等级，显示所有信息
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error
-import tkinter as tk
+import tkinter
 from tkinter import *
 import tkinter.ttk
-import tkinter.font as tf
+import tkinter.font
 from tkinter import filedialog
 from PIL import Image
 import re
@@ -22,20 +20,23 @@ from openpyxl import load_workbook
 import xlwt
 import xlrd
 import datetime
-import nsfw
 from datetime import timedelta
 from AC_automata import ac_automation
 import numpy as np
 from ocr_baidu import *
-#dsasd
-#test
+import skimage
+import glob
+import cv2
+import tensorflow as tf
+from keras import layers, optimizers, datasets
+from keras.models import load_model
+from sklearn.model_selection import train_test_split
+import segment
+#dsasdl
+
 
 # Add your Varial Here: (Keep This Line of comments)
 # Define UI Class
-
-
-#style = Style(theme='minty')
-
 class Detection:
     def __init__(self, root, isTKroot=True):
         def openFile():
@@ -54,6 +55,10 @@ class Detection:
 
             result = n1[:-1]
             print(result)
+            face_recognition(result)
+            root = segment.if_need_segment(result)
+            print(root)
+            model_test(root)
             # 打开要识别的图片
             image = Image.open(result)
             # -----------------2/29新增内容--------------------------#
@@ -61,30 +66,25 @@ class Detection:
             stringList = final_ocr(result)
             text_save("text.txt", stringList)
             str_result = run("text.txt")
-            if len(str_result)<27:
-                str_result = 'Text content compliance'
+            if len(str_result)<28:
+                str_result = '图片文字内容合格'
             result1 = str_result
             Text_3.insert('insert', result1+'\n\n' )  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
-            stringlist2 = nsfw.final_ocr2(result)
-            Text_3.insert('insert', stringlist2)  # 将结果添加到文本框显示
             # 清除log.txt文件内容
             with open(r'log.txt', 'a+', encoding='utf-8') as log:
                 log.truncate(0)
 
-
             picture_url = n1[:-1]
             p = ("python ./nsfw_master/classify_nsfw.py -m ./nsfw_master/data/open_nsfw-weights.npy ") + picture_url + (
                 " >>log.txt")
-
             # 讲测试结果放入log.txt文件内
             os.system(p)
-            print(p)
 
             # 读取log.txt
-            with open(r'log.txt', mode='r') as log:
+            with open(r'log.txt', mode='r', encoding='utf-8') as log:
                 content1 = log.read()
 
             Text_3.insert('insert', content1)  # 将结果添加到文本框显示
@@ -99,8 +99,8 @@ class Detection:
             count = wb.worksheets[0].max_row  # 总行数
             count += 1
             file = os.path.basename(picture_url)  # 输出图片名
-
-            result = result1 +" " + stringlist2
+            n = Text_3.get(1.0, 'end')  # 获取文本框1的值
+            result = n[:-1]
             # 向excel中写入对应的value
             sheet.cell(row=count, column=1).value = count - 1
             sheet.cell(row=count, column=2).value = file
@@ -108,7 +108,7 @@ class Detection:
             sheet.cell(row=count, column=4).value = result
 
             wb.save('result.xlsx')
-            print('Data was written successfully！')
+            print('数据写入成功！')
 
         def Batch_identification(file, path):
             # 打开要识别的图片
@@ -123,16 +123,13 @@ class Detection:
 
 
             if len(str_result)<28 :
-                str_result = 'Text content compliance'
+                str_result = '图片文字内容合格'
 
             result1 = str_result
             Text_3.insert('insert', result1+'\n\n')  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
-            stringlist2 = nsfw.final_ocr2(path)
-            Text_3.insert('insert', stringlist2)  # 将结果添加到文本框显示
-            result1 = result1 +" "+ stringlist2
             # 清除log.txt文件内容
             with open(r'log.txt', 'a+', encoding='utf-8') as log:
                 log.truncate(0)
@@ -180,7 +177,7 @@ class Detection:
             sheet.cell(row=count, column=4).value = result1
 
             wb.save('result.xlsx')
-            print('Data was written successfully！')
+            print('数据写入成功！')
 
         def findfiles():
             '''打开选择文件夹对话框'''
@@ -190,6 +187,66 @@ class Detection:
             path = filedialog.askdirectory()  # 获得选择好的文件夹
             Text_1.delete(1.0, 'end')  # 清除文本框内容
             Text_1.insert('insert', path)  # 将结果添加到文本框显示
+
+        def face_recognition(path):
+            face_number = facecompare.facenumber(path)
+            if face_number == 0:
+                info = "This image does not contain human face"
+            else:
+                info = "This image contains human face"
+            Text_3.insert('insert', info + '\n\n')
+
+            if(face_number != 0):
+                result = facecompare.face_familiar(path)
+                Text_3.insert('insert', result + '\n\n')
+
+        def model_test(path):
+            model = load_model("./Model/model.h5")
+            image_path = path
+            w = 128
+            h = 128
+            dict = {'0': 'Emblem of China', '1': 'Flag of China', '2': 'Party Emblem', '3': 'Cross',
+                    '4': 'Gambling Chip', '5': 'Gambling Wheel', '6': 'Gun', '7': 'Nazi Sign',
+                    '8': 'Tai ji', '9': 'Normal'}
+
+            # 2.2.2 导入测试数据
+            # 从 5 类图像数据中各自任意抽取一张用来进行模型效果测试。以下是每张图像的路径与名称。
+            # 步骤 1 加载测试数据
+            imgs = []  # 创建保存图像的空列表
+            # 利用 glob.glob 函数搜索每个层级文件下面符合特定格式“/*.jpg”进行遍历
+            for im in glob.glob(image_path + '/*.jpg'):
+                img = cv2.imread(im)  # 利用 io.imread 函数读取每一张被遍历的图像并将其赋值给img
+                img = cv2.resize(img, (w, h))  # 利用 cv2.resize 函数对每张 img 图像进行大小缩放，统一处理为大小为 w*h(即 128*128)的图像
+                imgs.append(img)  # 将每张经过处理的图像数据保存在之前创建的 imgs 空列表当中
+
+            imgs = np.asarray(imgs, np.float32)
+
+            # 2.2.3 模型验证
+            # 步骤 1 模型验证
+            # 将图像导入模型进行预测
+            prediction = model.predict(imgs)
+            prediction = np.argmax(prediction, axis=1)
+            print(len(prediction))
+            result = ''
+            k = 0
+            # 绘制预测图像
+            for i in range(np.size(prediction)):
+                if str(prediction[i]) >= '0' and str(prediction[i]) <= '2':
+                    result = "This image contains political illegal elements(" + dict[
+                        str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '3' or str(prediction[i]) == '8':
+                    result = "This image contains religion elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '4' or str(prediction[i]) == '5':
+                    result = "This image contains gambling elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '6' or str(prediction[i]) == '7':
+                    result = "This image contains violence elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '9':
+                    k = k+1
+                if k == len(prediction):
+                    result = "This image does not contain prohibited elements"
+
+            Text_3.insert('insert', result + '\n\n')
+
 
         def identification():
             n1 = Text_1.get(1.0, 'end')  # 获取文本框1的值
@@ -201,7 +258,6 @@ class Detection:
                 # 利用os.path.join()方法取得路径全名,并存入cur_path变量,否则每次只能遍历一层目录
                 cur_path = os.path.join(path, file)
                 print(file)
-
                 Batch_identification(file, cur_path)
 
             Statistics(len(file_list))
@@ -219,35 +275,20 @@ class Detection:
                 int(result.iloc[i, [0]]['ID']), content, result.iloc[i, [2]]['更新时间'],
                 result.iloc[i, [3]]['识别结果']))  # #给第0⾏添加数据,索引值可重复
 
-        def Statistics(num):  # 画图
+
+        def Statistics(num):#画图
 
             count = 0
             Canvas_1 = Fun.BuildChart('Pie', uiName, Form_1, 'Canvas_1')
             Fun.Register(uiName, 'Canvas_1', Canvas_1)
-            Fun.SetControlPlace(uiName, 'Canvas_1', 20, 240, 240, 240)
-            detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1', Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
             Fun.SetControlPlace(uiName, 'Canvas_1', 180, 180, 240, 240)
-            count = detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1',
-                                                    Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
+            count = detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1', Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
 
-            Canvas_2 = Fun.BuildChart('Bar', uiName, Form_1, 'Canvas_2')
-            Fun.Register(uiName, 'Canvas_2', Canvas_2)
-            Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
-            detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
             # Canvas_2 = Fun.BuildChart('Bar', uiName, Form_1, 'Canvas_2')
             # Fun.Register(uiName, 'Canvas_2', Canvas_2)
             # Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
             # detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
 
-            # 两张图表盖住了以下标签
-            Label_9 = tkinter.Label(Form_1, text="Illegal")
-            Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
-            Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
-            Label_9.configure(bg="#ffffff")
-            Label_9.configure(relief="flat")
-            Label_9_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
-                                           overstrike=0)
-            Label_9.configure(font=Label_9_Ft)
             # Label_9 = tkinter.Label(Form_1, text="Illegal")
             # Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
             # Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
@@ -257,14 +298,6 @@ class Detection:
             #                                overstrike=0)
             # Label_9.configure(font=Label_9_Ft)
 
-            Label_10 = tkinter.Label(Form_1, text="Qualified")
-            Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
-            Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
-            Label_10.configure(bg="#ffffff")
-            Label_10.configure(relief="flat")
-            Label_10_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
-                                            overstrike=0)
-            Label_10.configure(font=Label_10_Ft)
             # Label_10 = tkinter.Label(Form_1, text="Qualified")
             # Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
             # Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
@@ -274,7 +307,6 @@ class Detection:
             #                                 overstrike=0)
             # Label_10.configure(font=Label_10_Ft)
 
-            Label_12 = tkinter.Label(Form_1, text="Number " + str(num) + "pictures, results are following:")
             Label_12 = tkinter.Label(Form_1, text="Number " + str(count) + " pictures, results are following:")
             Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
             Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 400, 30)
@@ -284,16 +316,14 @@ class Detection:
                                             overstrike=0)
             Label_12.configure(font=Label_12_Ft)
 
-            Label_13 = tkinter.Label(Form_1,
-                                     text="A-Cosmetics B-Health Care\nC-Daily Necessities D-Medicine\nE-Education")
             Label_13 = tkinter.Label(Form_1, text="A-Qualified B-Not Qualified")
             Fun.Register(uiName, 'Label_13', Label_13, 'legend')
-            Fun.SetControlPlace(uiName, 'Label_13', 15, 450, 240, 60)
             Fun.SetControlPlace(uiName, 'Label_13', 180, 450, 240, 30)
             Label_13.configure(bg="#ffffff")
             Label_13.configure(relief="flat")
             Label_13_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
+            Label_13.configure(font=Label_13_Ft)
 
         uiName = self.__class__.__name__
         self.uiName = uiName
@@ -303,22 +333,21 @@ class Detection:
         Fun.Register(uiName, 'root', root)
         # style = detection_sty.SetupStyle()
         if isTKroot == True:
-            root.title("Internet Illegal Advertisement Recognition")
+            root.title("INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
             Fun.CenterDlg(uiName, root, 1200, 600)
-            root['background'] = '#b4ecc4'
+            root['background'] = '#efefef'
         Form_1 = tkinter.Canvas(root, width=10, height=4)
         Form_1.pack(fill=BOTH, expand=True)
-        Form_1.configure(bg="#b4ecc4")
+        Form_1.configure(bg="#efefef")
         Form_1.configure(highlightthickness=0)
         Fun.Register(uiName, 'Form_1', Form_1)
         # Create the elements of root
-        Label_1 = tkinter.Label(Form_1, text="Internet Illegal Advertisement Recognition")
+        Label_1 = tkinter.Label(Form_1, text="INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION")
         Fun.Register(uiName, 'Label_1', Label_1, 'INTERNET ILLEGAL ADVERTISEMENTS RECOGNITION')
-        Fun.SetControlPlace(uiName, 'Label_1', 0, 0, 1250, 50)
+        Fun.SetControlPlace(uiName, 'Label_1', 250, 0, 737, 50)
         Label_1.configure(relief="flat")
-        Label_1_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0, overstrike=0)
-        Label_1.configure(font=Label_1_Ft,bg='#ffffff',fg='#5F8A95')
-
+        Label_1_Ft = tkinter.font.Font(family='华文新魏', size=20, weight='bold', slant='roman', underline=0, overstrike=0)
+        Label_1.configure(font=Label_1_Ft)
         ListBox_1 = tkinter.Listbox(Form_1)
         Fun.Register(uiName, 'ListBox_1', ListBox_1, 'Single Recognition')
         Fun.SetControlPlace(uiName, 'ListBox_1', 600, 50, 600, 300)
@@ -326,95 +355,89 @@ class Detection:
         Fun.Register(uiName, 'ListBox_2', ListBox_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'ListBox_2', 0, 50, 600, 550)
         Label_2 = tkinter.Label(Form_1, text="Batch Process")
-        Label_2_Ft = tkinter.font.Font(family='Segoe UI', size=10, weight='bold', slant='roman', underline=0,overstrike=0)
-        Label_2.configure(font=Label_2_Ft,bg='#ffffff',fg='#5F8A95')
         Fun.Register(uiName, 'Label_2', Label_2, 'Batch Process')
         Fun.SetControlPlace(uiName, 'Label_2', 0, 50, 100, 20)
         Label_2.configure(relief="flat")
         Label_3 = tkinter.Label(Form_1, text="Single Process")
         Fun.Register(uiName, 'Label_3', Label_3, 'Single Process')
         Fun.SetControlPlace(uiName, 'Label_3', 600, 50, 100, 20)
-        Label_3.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
         Label_3.configure(relief="flat")
         Label_4 = tkinter.Label(Form_1, text="Folder Path:")
         Fun.Register(uiName, 'Label_4', Label_4, 'Folder Path')
         Fun.SetControlPlace(uiName, 'Label_4', 20, 80, 150, 40)
-
+        Label_4.configure(bg="#ffffff")
         Label_4.configure(relief="flat")
-        Label_4_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
+        Label_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
-        Label_4.configure(font=Label_4_Ft,bg='#ffffff',fg='#5F8A95')
+        Label_4.configure(font=Label_4_Ft)
         Text_1 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_1', Text_1, 'Enter Path')
         Fun.SetControlPlace(uiName, 'Text_1', 170, 80, 150, 40)
-        Text_1.configure(bg="#ffffff",fg='#5F8A95')
+        Text_1.configure(bg="#ffffff")
         Text_1.configure(relief="sunken")
         Button_1 = tkinter.Button(Form_1, text="Choose", command=findfiles)
         Fun.Register(uiName, 'Button_1', Button_1, 'Choose')
-        Fun.SetControlPlace(uiName, 'Button_1', 325, 80, 120, 40)
-        Button_1_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
+        Fun.SetControlPlace(uiName, 'Button_1', 320, 80, 120, 40)
+        Button_1_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_1.configure(font=Button_1_Ft,bg='#3eb489',fg='#ffffff')
+        Button_1.configure(font=Button_1_Ft)
         Button_2 = tkinter.Button(Form_1, text="Recognition", command=identification)
         Fun.Register(uiName, 'Button_2', Button_2, 'Recognition')
-        Fun.SetControlPlace(uiName, 'Button_2', 450, 80, 120, 40)
-        Button_2_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
+        Fun.SetControlPlace(uiName, 'Button_2', 440, 80, 100, 40)
+        Button_2_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_2.configure(font=Button_2_Ft,bg='#3eb489',fg='#ffffff')
+        Button_2.configure(font=Button_2_Ft)
         Label_5 = tkinter.Label(Form_1, text="Picture Path:")
         Fun.Register(uiName, 'Label_5', Label_5, 'Picture Path')
         Fun.SetControlPlace(uiName, 'Label_5', 620, 80, 150, 40)
         Label_5.configure(bg="#ffffff")
         Label_5.configure(relief="flat")
-        Label_5_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
+        Label_5_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
-        Label_5.configure(font=Label_5_Ft,bg='#ffffff',fg='#5F8A95')
+        Label_5.configure(font=Label_5_Ft)
         ListBox_3 = tkinter.Listbox(Form_1)
         Fun.Register(uiName, 'ListBox_3', ListBox_3, 'History')
         Fun.SetControlPlace(uiName, 'ListBox_3', 600, 350, 600, 250)
         Button_3 = tkinter.Button(Form_1, text="Choose", command=openFile)
         Fun.Register(uiName, 'Button_3', Button_3, 'Choose')
-        Fun.SetControlPlace(uiName, 'Button_3', 925, 80, 120, 40)
-        Button_3_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
+        Fun.SetControlPlace(uiName, 'Button_3', 920, 80, 100, 40)
+        Button_3_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_3.configure(font=Button_3_Ft,bg='#3eb489',fg='#ffffff')
+        Button_3.configure(font=Button_3_Ft)
         Button_4 = tkinter.Button(Form_1, text="Recognition", command=OCR)
         Fun.Register(uiName, 'Button_4', Button_4, 'Single Recognition')
-        Fun.SetControlPlace(uiName, 'Button_4', 1050, 80, 120, 40)
-        Button_4_Ft = tkinter.font.Font(family='Sonder', size=14, weight='normal', slant='roman', underline=0,
+        Fun.SetControlPlace(uiName, 'Button_4', 1020, 80, 100, 40)
+        Button_4_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                         overstrike=0)
-        Button_4.configure(font=Button_4_Ft,bg='#3eb489',fg='#ffffff')
+        Button_4.configure(font=Button_4_Ft)
         Label_6 = tkinter.Label(Form_1, text="Result:")
         Fun.Register(uiName, 'Label_6', Label_6, 'Single Result')
         Fun.SetControlPlace(uiName, 'Label_6', 620, 120, 150, 40)
         Label_6.configure(bg="#ffffff")
         Label_6.configure(relief="flat")
-        Label_6_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
+        Label_6_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
-        Label_6.configure(font=Label_6_Ft,bg='#ffffff',fg='#5F8A95')
+        Label_6.configure(font=Label_6_Ft)
         Text_2 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_2', Text_2, 'Access Image Address')
         Fun.SetControlPlace(uiName, 'Text_2', 770, 80, 150, 40)
-        Text_2.configure(bg="#ffffff", fg='#5F8A95')
         Text_2.configure(relief="sunken")
         Text_3 = tkinter.Text(Form_1)
         Fun.Register(uiName, 'Text_3', Text_3, 'Picture Result')
-        Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 400, 160)
-        Text_3.configure(bg="#ffffff", fg='#5F8A95')
+        Fun.SetControlPlace(uiName, 'Text_3', 770, 130, 350, 160)
         Text_3.configure(relief="sunken")
-        Label_20 = tkinter.Label(Form_1, text="History")
-        Label_20.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
-        Fun.Register(uiName, 'Label_20', Label_20, 'History Query')
-        Fun.SetControlPlace(uiName, 'Label_20', 600, 350, 100, 20)
-        Label_20.configure(relief="flat")
+        Label_6 = tkinter.Label(Form_1, text="History")
+        Fun.Register(uiName, 'Label_6', Label_6, 'History Query')
+        Fun.SetControlPlace(uiName, 'Label_6', 600, 350, 100, 20)
+        Label_5.configure(relief="flat")
         Label_7 = tkinter.Label(Form_1, text="Result:")
         Fun.Register(uiName, 'Label_7', Label_7, 'Batch Result')
         Fun.SetControlPlace(uiName, 'Label_7', 20, 120, 150, 40)
         Label_7.configure(bg="#ffffff")
         Label_7.configure(relief="flat")
-        Label_7_Ft = tkinter.font.Font(family='Sonder', size=15, weight='bold', slant='roman', underline=0,
+        Label_7_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                        overstrike=0)
-        Label_7.configure(font=Label_7_Ft,bg='#ffffff',fg='#5F8A95')
+        Label_7.configure(font=Label_7_Ft)
         ListView_1 = tkinter.ttk.Treeview(Form_1, show="headings")
         Fun.Register(uiName, 'ListView_1', ListView_1)
         Fun.SetControlPlace(uiName, 'ListView_1', 620, 420, 560, 160)
@@ -431,26 +454,19 @@ class Detection:
 
         Label_8 = tkinter.Label(Form_1, text="Picture Name:")
         Fun.Register(uiName, 'Label_8', Label_8, 'File Name')
-        Fun.SetControlPlace(uiName, 'Label_8', 648, 385, 100, 25)
-        Label_8.configure(font=Label_2_Ft, bg='#ffffff', fg='#5F8A95')
+        Fun.SetControlPlace(uiName, 'Label_8', 652, 385, 100, 20)
         Label_8.configure(relief="flat")
         Entry_1_Variable = Fun.AddTKVariable(uiName, 'Entry_1', '')
         Entry_1 = tkinter.Entry(Form_1, textvariable=Entry_1_Variable)
         Fun.Register(uiName, 'Entry_1', Entry_1, 'Picture Name')
-        Fun.SetControlPlace(uiName, 'Entry_1', 752, 385, 120, 25)
+        Fun.SetControlPlace(uiName, 'Entry_1', 752, 385, 120, 20)
         Entry_1.configure(relief="sunken")
         Button_5 = tkinter.Button(Form_1, text="Search", command=query)
         Fun.Register(uiName, 'Button_5', Button_5, 'Search')
-        Fun.SetControlPlace(uiName, 'Button_5', 880, 384, 100, 25)
-        Button_5_Ft = tkinter.font.Font(family='Sonder', size=10, weight='normal', slant='roman', underline=0,
-                                        overstrike=0)
-        Button_5.configure(font=Button_5_Ft, bg='#3eb489', fg='#ffffff')
+        Fun.SetControlPlace(uiName, 'Button_5', 865, 384, 100, 28)
         Button_6 = tkinter.Button(Form_1, text="More", command=openExcel)
         Fun.Register(uiName, 'Button_6', Button_6, 'More')
-        Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 25)
-        Button_6_Ft = tkinter.font.Font(family='Sonder', size=10, weight='normal', slant='roman', underline=0,
-                                        overstrike=0)
-        Button_6.configure(font=Button_5_Ft, bg='#3eb489', fg='#ffffff')
+        Fun.SetControlPlace(uiName, 'Button_6', 990, 383, 100, 28)
 
         # Add Some Logic Code Here: (Keep This Line of comments)
         # Statistics(3)
