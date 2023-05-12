@@ -4,6 +4,7 @@ import sys
 import detection_cmd
 import Fun
 import os
+import facecompare
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='1' # 这是默认的显示等级，显示所有信息
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error
@@ -23,7 +24,15 @@ from datetime import timedelta
 from AC_automata import ac_automation
 import numpy as np
 from ocr_baidu import *
-#dsasd
+import skimage
+import glob
+import cv2
+import tensorflow as tf
+from keras import layers, optimizers, datasets
+from keras.models import load_model
+from sklearn.model_selection import train_test_split
+import segment
+#dsasdl
 
 
 # Add your Varial Here: (Keep This Line of comments)
@@ -46,6 +55,10 @@ class Detection:
 
             result = n1[:-1]
             print(result)
+            face_recognition(result)
+            root = segment.if_need_segment(result)
+            print(root)
+            model_test(root)
             # 打开要识别的图片
             image = Image.open(result)
             # -----------------2/29新增内容--------------------------#
@@ -175,6 +188,66 @@ class Detection:
             Text_1.delete(1.0, 'end')  # 清除文本框内容
             Text_1.insert('insert', path)  # 将结果添加到文本框显示
 
+        def face_recognition(path):
+            face_number = facecompare.facenumber(path)
+            if face_number == 0:
+                info = "This image does not contain human face"
+            else:
+                info = "This image contains human face"
+            Text_3.insert('insert', info + '\n\n')
+
+            if(face_number != 0):
+                result = facecompare.face_familiar(path)
+                Text_3.insert('insert', result + '\n\n')
+
+        def model_test(path):
+            model = load_model("./Model/model.h5")
+            image_path = path
+            w = 128
+            h = 128
+            dict = {'0': 'Emblem of China', '1': 'Flag of China', '2': 'Party Emblem', '3': 'Cross',
+                    '4': 'Gambling Chip', '5': 'Gambling Wheel', '6': 'Gun', '7': 'Nazi Sign',
+                    '8': 'Tai ji', '9': 'Normal'}
+
+            # 2.2.2 导入测试数据
+            # 从 5 类图像数据中各自任意抽取一张用来进行模型效果测试。以下是每张图像的路径与名称。
+            # 步骤 1 加载测试数据
+            imgs = []  # 创建保存图像的空列表
+            # 利用 glob.glob 函数搜索每个层级文件下面符合特定格式“/*.jpg”进行遍历
+            for im in glob.glob(image_path + '/*.jpg'):
+                img = cv2.imread(im)  # 利用 io.imread 函数读取每一张被遍历的图像并将其赋值给img
+                img = cv2.resize(img, (w, h))  # 利用 cv2.resize 函数对每张 img 图像进行大小缩放，统一处理为大小为 w*h(即 128*128)的图像
+                imgs.append(img)  # 将每张经过处理的图像数据保存在之前创建的 imgs 空列表当中
+
+            imgs = np.asarray(imgs, np.float32)
+
+            # 2.2.3 模型验证
+            # 步骤 1 模型验证
+            # 将图像导入模型进行预测
+            prediction = model.predict(imgs)
+            prediction = np.argmax(prediction, axis=1)
+            print(len(prediction))
+            result = ''
+            k = 0
+            # 绘制预测图像
+            for i in range(np.size(prediction)):
+                if str(prediction[i]) >= '0' and str(prediction[i]) <= '2':
+                    result = "This image contains political illegal elements(" + dict[
+                        str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '3' or str(prediction[i]) == '8':
+                    result = "This image contains religion elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '4' or str(prediction[i]) == '5':
+                    result = "This image contains gambling elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '6' or str(prediction[i]) == '7':
+                    result = "This image contains violence elements(" + dict[str(prediction[i])] + "), which is illegal!"
+                if str(prediction[i]) == '9':
+                    k = k+1
+                if k == len(prediction):
+                    result = "This image does not contain prohibited elements"
+
+            Text_3.insert('insert', result + '\n\n')
+
+
         def identification():
             n1 = Text_1.get(1.0, 'end')  # 获取文本框1的值
             path = n1[:-1]
@@ -185,7 +258,6 @@ class Detection:
                 # 利用os.path.join()方法取得路径全名,并存入cur_path变量,否则每次只能遍历一层目录
                 cur_path = os.path.join(path, file)
                 print(file)
-
                 Batch_identification(file, cur_path)
 
             Statistics(len(file_list))
