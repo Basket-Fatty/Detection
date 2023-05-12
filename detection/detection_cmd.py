@@ -26,7 +26,7 @@ def Pie_29_onLoadData(uiName,widgetName,Figure):
     qualified = 0
     unQualified = 0;
     for count in range(1, wb.worksheets[0].max_row+1):
-        if sheet.cell(row=count, column=4).value == "qualified":
+        if sheet.cell(row=count, column=4).value == "Text content compliance Image review results: The images are not pornographic":
             qualified+=1
         else:
             unQualified+=1

@@ -22,6 +22,7 @@ from openpyxl import load_workbook
 import xlwt
 import xlrd
 import datetime
+import nsfw
 from datetime import timedelta
 from AC_automata import ac_automation
 import numpy as np
@@ -60,25 +61,30 @@ class Detection:
             stringList = final_ocr(result)
             text_save("text.txt", stringList)
             str_result = run("text.txt")
-            if len(str_result)<28:
-                str_result = '图片文字内容合格'
+            if len(str_result)<27:
+                str_result = 'Text content compliance'
             result1 = str_result
             Text_3.insert('insert', result1+'\n\n' )  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
+            stringlist2 = nsfw.final_ocr2(result)
+            Text_3.insert('insert', stringlist2)  # 将结果添加到文本框显示
             # 清除log.txt文件内容
             with open(r'log.txt', 'a+', encoding='utf-8') as log:
                 log.truncate(0)
 
+
             picture_url = n1[:-1]
             p = ("python ./nsfw_master/classify_nsfw.py -m ./nsfw_master/data/open_nsfw-weights.npy ") + picture_url + (
                 " >>log.txt")
+
             # 讲测试结果放入log.txt文件内
             os.system(p)
+            print(p)
 
             # 读取log.txt
-            with open(r'log.txt', mode='r', encoding='utf-8') as log:
+            with open(r'log.txt', mode='r') as log:
                 content1 = log.read()
 
             Text_3.insert('insert', content1)  # 将结果添加到文本框显示
@@ -93,8 +99,8 @@ class Detection:
             count = wb.worksheets[0].max_row  # 总行数
             count += 1
             file = os.path.basename(picture_url)  # 输出图片名
-            n = Text_3.get(1.0, 'end')  # 获取文本框1的值
-            result = n[:-1]
+
+            result = result1 +" " + stringlist2
             # 向excel中写入对应的value
             sheet.cell(row=count, column=1).value = count - 1
             sheet.cell(row=count, column=2).value = file
@@ -102,7 +108,7 @@ class Detection:
             sheet.cell(row=count, column=4).value = result
 
             wb.save('result.xlsx')
-            print('数据写入成功！')
+            print('Data was written successfully！')
 
         def Batch_identification(file, path):
             # 打开要识别的图片
@@ -117,13 +123,16 @@ class Detection:
 
 
             if len(str_result)<28 :
-                str_result = '图片文字内容合格'
+                str_result = 'Text content compliance'
 
             result1 = str_result
             Text_3.insert('insert', result1+'\n\n')  # 将结果添加到文本框显示
 
 
             # -------------------nsfw识别----------------------------#
+            stringlist2 = nsfw.final_ocr2(path)
+            Text_3.insert('insert', stringlist2)  # 将结果添加到文本框显示
+            result1 = result1 +" "+ stringlist2
             # 清除log.txt文件内容
             with open(r'log.txt', 'a+', encoding='utf-8') as log:
                 log.truncate(0)
@@ -171,7 +180,7 @@ class Detection:
             sheet.cell(row=count, column=4).value = result1
 
             wb.save('result.xlsx')
-            print('数据写入成功！')
+            print('Data was written successfully！')
 
         def findfiles():
             '''打开选择文件夹对话框'''
@@ -210,20 +219,35 @@ class Detection:
                 int(result.iloc[i, [0]]['ID']), content, result.iloc[i, [2]]['更新时间'],
                 result.iloc[i, [3]]['识别结果']))  # #给第0⾏添加数据,索引值可重复
 
-
-        def Statistics(num):#画图
+        def Statistics(num):  # 画图
 
             count = 0
             Canvas_1 = Fun.BuildChart('Pie', uiName, Form_1, 'Canvas_1')
             Fun.Register(uiName, 'Canvas_1', Canvas_1)
+            Fun.SetControlPlace(uiName, 'Canvas_1', 20, 240, 240, 240)
+            detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1', Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
             Fun.SetControlPlace(uiName, 'Canvas_1', 180, 180, 240, 240)
-            count = detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1', Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
+            count = detection_cmd.Pie_29_onLoadData(uiName, 'Canvas_1',
+                                                    Fun.GetUserData(uiName, 'Canvas_1', 'ChartFigure'))
 
+            Canvas_2 = Fun.BuildChart('Bar', uiName, Form_1, 'Canvas_2')
+            Fun.Register(uiName, 'Canvas_2', Canvas_2)
+            Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
+            detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
             # Canvas_2 = Fun.BuildChart('Bar', uiName, Form_1, 'Canvas_2')
             # Fun.Register(uiName, 'Canvas_2', Canvas_2)
             # Fun.SetControlPlace(uiName, 'Canvas_2', 304, 240, 240, 240)
             # detection_cmd.Bar_30_onLoadData(uiName, 'Canvas_2', Fun.GetUserData(uiName, 'Canvas_2', 'ChartFigure'))
 
+            # 两张图表盖住了以下标签
+            Label_9 = tkinter.Label(Form_1, text="Illegal")
+            Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
+            Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
+            Label_9.configure(bg="#ffffff")
+            Label_9.configure(relief="flat")
+            Label_9_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+                                           overstrike=0)
+            Label_9.configure(font=Label_9_Ft)
             # Label_9 = tkinter.Label(Form_1, text="Illegal")
             # Fun.Register(uiName, 'Label_9', Label_9, 'Illegal Category')
             # Fun.SetControlPlace(uiName, 'Label_9', 320, 455, 100, 30)
@@ -233,6 +257,14 @@ class Detection:
             #                                overstrike=0)
             # Label_9.configure(font=Label_9_Ft)
 
+            Label_10 = tkinter.Label(Form_1, text="Qualified")
+            Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
+            Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
+            Label_10.configure(bg="#ffffff")
+            Label_10.configure(relief="flat")
+            Label_10_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
+                                            overstrike=0)
+            Label_10.configure(font=Label_10_Ft)
             # Label_10 = tkinter.Label(Form_1, text="Qualified")
             # Fun.Register(uiName, 'Label_10', Label_10, 'Qualified Category')
             # Fun.SetControlPlace(uiName, 'Label_10', 400, 455, 180, 30)
@@ -242,23 +274,26 @@ class Detection:
             #                                 overstrike=0)
             # Label_10.configure(font=Label_10_Ft)
 
+            Label_12 = tkinter.Label(Form_1, text="Number " + str(num) + "pictures, results are following:")
             Label_12 = tkinter.Label(Form_1, text="Number " + str(count) + " pictures, results are following:")
             Fun.Register(uiName, 'Label_12', Label_12, 'Qualified Category')
-            Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 500, 50)
+            Fun.SetControlPlace(uiName, 'Label_12', 100, 150, 400, 30)
             Label_12.configure(bg="#ffffff")
             Label_12.configure(relief="flat")
-            Label_12_Ft = tkinter.font.Font(family='#5F8A95', size=12, weight='bold', slant='roman', underline=0,
+            Label_12_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
-            Label_12.configure(font=Label_12_Ft,fg='#5F8A95')
+            Label_12.configure(font=Label_12_Ft)
 
+            Label_13 = tkinter.Label(Form_1,
+                                     text="A-Cosmetics B-Health Care\nC-Daily Necessities D-Medicine\nE-Education")
             Label_13 = tkinter.Label(Form_1, text="A-Qualified B-Not Qualified")
             Fun.Register(uiName, 'Label_13', Label_13, 'legend')
-            Fun.SetControlPlace(uiName, 'Label_13', 50, 450, 500, 50)
-            Label_13.configure(bg="#ffffff",fg='#5F8A95')
+            Fun.SetControlPlace(uiName, 'Label_13', 15, 450, 240, 60)
+            Fun.SetControlPlace(uiName, 'Label_13', 180, 450, 240, 30)
+            Label_13.configure(bg="#ffffff")
             Label_13.configure(relief="flat")
-            Label_13_Ft = tkinter.font.Font(family='Segoe UI', size=12, weight='normal', slant='roman', underline=0,
+            Label_13_Ft = tkinter.font.Font(family='华文新魏', size=12, weight='normal', slant='roman', underline=0,
                                             overstrike=0)
-            Label_13.configure(font=Label_13_Ft)
 
         uiName = self.__class__.__name__
         self.uiName = uiName
