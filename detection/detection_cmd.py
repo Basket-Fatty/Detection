@@ -17,7 +17,7 @@ ElementBGArray={}
 ElementBGArray_Resize={} 
 ElementBGArray_IM={} 
 
-def Pie_29_onLoadData(uiName,widgetName,Figure):
+def Pie_29_onLoadData(uiName,widgetName,Figure,num):
     a = Figure.add_subplot(111)
 
     # 读取excel表格
@@ -25,7 +25,7 @@ def Pie_29_onLoadData(uiName,widgetName,Figure):
     sheet = wb.active
     qualified = 0
     unQualified = 0;
-    for count in range(1, wb.worksheets[0].max_row+1):
+    for count in range(wb.worksheets[0].max_row+1-num, wb.worksheets[0].max_row+1):
         if sheet.cell(row=count, column=4).value == "Text content compliance Image review results: The images are not pornographic":
             qualified+=1
         else:
@@ -33,9 +33,8 @@ def Pie_29_onLoadData(uiName,widgetName,Figure):
 
     nums = [qualified,unQualified]
     labels = ['A','B']
-    a.pie(x=nums,labels=labels)
+    a.pie(x=nums,labels=labels,autopct='%0.1f%%')
 
-    return wb.worksheets[0].max_row
 def Bar_30_onLoadData(uiName,widgetName,Figure):
     a = Figure.add_subplot(111)
     a.bar(left=(0,1),height=(8,4),width=0.55)
